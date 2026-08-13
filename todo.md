@@ -31,3 +31,7 @@
 - [x] Ajouter un test d’intégration du flux publication admin vers vitrine et page détail
 - [x] Documenter la migration immatriculation et le statut machine pour PostgreSQL local
 
+- [ ] Préparer des archives frontend et backend séparées avec guide local de démarrage
+- [ ] Créer et pousser un dépôt GitHub privé clonable pour 3BTRADING
+- [ ] Vérifier les archives et livrer les liens de téléchargement avec la limite DATABASE_URL documentée
+
