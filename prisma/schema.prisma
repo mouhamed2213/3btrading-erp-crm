@@ -14,12 +14,12 @@ datasource db {
 // USERS (AUTH)
 // ============================================================================
 model User {
-  id            Int     @id @default(autoincrement())
-  openId        String  @unique 
+  id            Int      @id @default(autoincrement())
+  openId        String   @unique
   name          String?
-  email         String? 
-  loginMethod   String? 
-  role          Role    @default(USER)
+  email         String?
+  loginMethod   String?
+  role          Role     @default(USER)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   lastSignedIn  DateTime @default(now())

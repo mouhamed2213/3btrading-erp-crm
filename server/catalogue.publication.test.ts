@@ -42,7 +42,7 @@ const adminContext = (): TrpcContext => ({
     name: 'Test Admin',
     email: 'admin@test.local',
     loginMethod: 'test',
-    role: 'admin',
+    role: 'ADMIN',
     createdAt: new Date(),
     updatedAt: new Date(),
     lastSignedIn: new Date(),
