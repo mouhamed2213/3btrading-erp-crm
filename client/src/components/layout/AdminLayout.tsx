@@ -48,7 +48,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     return <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4"><div className="max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-8 text-center text-white shadow-2xl"><img src="/manus-storage/3btrading-logo_4274decd.png" alt="3BTRADING" className="mx-auto mb-5 h-14 w-14 object-contain" /><h1 className="text-2xl font-bold">Accès à la console interne</h1><p className="mt-3 text-sm leading-6 text-slate-300">Connectez-vous avec un compte autorisé pour gérer les publications, les stocks et les opérations 3BTRADING.</p><Button onClick={() => startLogin()} className="mt-6 w-full bg-amber-500 text-slate-950 hover:bg-amber-400">Se connecter</Button><Link href="/" className="mt-4 inline-block text-sm text-slate-400 hover:text-white">Retour à la vitrine</Link></div></div>;
   }
 
-  if (user.role !== 'admin') {
+  if (user.role !== 'ADMIN') {
     return <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4"><div className="max-w-md rounded-2xl border border-red-900/60 bg-slate-900 p-8 text-center text-white shadow-2xl"><h1 className="text-2xl font-bold">Accès non autorisé</h1><p className="mt-3 text-sm leading-6 text-slate-300">Votre compte est bien connecté, mais il ne possède pas le rôle administrateur requis pour cette console.</p><div className="mt-6 flex gap-3"><Button onClick={() => void logout()} variant="outline" className="flex-1 border-slate-700 bg-transparent text-white hover:bg-slate-800">Se déconnecter</Button><Link href="/" className="flex-1"><Button className="w-full bg-amber-500 text-slate-950 hover:bg-amber-400">Vitrine</Button></Link></div></div></div>;
   }
 

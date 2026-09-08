@@ -4,7 +4,8 @@ import axios, { type AxiosInstance } from "axios";
 import { parse as parseCookieHeader } from "cookie";
 import type { Request } from "express";
 import { SignJWT, jwtVerify } from "jose";
-import type { User } from "../../drizzle/schema";
+import type { User } from "../../generated/prisma/client";
+import { Role } from "../../generated/prisma/client";
 import * as db from "../db";
 import { ENV } from "./env";
 import type {
@@ -338,7 +339,7 @@ function buildCronUser(
     name: userInfo.name || "Manus Scheduled Task",
     email: null,
     loginMethod: null,
-    role: "user",
+    role: Role.USER,
     createdAt: now,
     updatedAt: now,
     lastSignedIn: now,
