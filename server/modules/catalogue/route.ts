@@ -26,7 +26,7 @@ const machineInput = z.object({
   enVente: z.boolean(),
   enLocation: z.boolean(),
   description: z.string().max(10000).optional(),
-  images: z.array(z.string().url().or(z.string().startsWith('/manus-storage/'))).max(6),
+  images: z.array(z.string().url().or(z.string().startsWith('/files/'))).max(6),
   specifications: z.record(z.string(), z.string()).default({}),
   isPublished: z.boolean(),
   isFeatured: z.boolean(),
@@ -45,7 +45,7 @@ const pieceInput = z.object({
   fournisseur: z.string().optional(),
   oemReference: z.string().optional(),
   description: z.string().max(10000).optional(),
-  images: z.array(z.string().url().or(z.string().startsWith('/manus-storage/'))).max(6),
+  images: z.array(z.string().url().or(z.string().startsWith('/files/'))).max(6),
   specifications: z.record(z.string(), z.string()).default({}),
   isPublished: z.boolean(),
 });

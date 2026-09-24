@@ -17,7 +17,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-xl">
       <div className="container flex h-[76px] items-center justify-between">
         <Link href="/" className="flex items-center gap-3 font-bold text-xl shrink-0">
-          <img src="/manus-storage/3btrading-logo_4274decd.png" alt="3BTRADING" className="h-10 w-10 object-contain" />
+          <img src="/files/3btrading/logo.png" alt="3BTRADING" className="h-10 w-10 object-contain" />
           <div className="hidden sm:block"><div className="text-slate-900 tracking-tight">3BTRADING</div><div className="text-[9px] tracking-[0.18em] uppercase font-bold text-amber-600 -mt-1">Travaux · Location · Pièces</div></div>
         </Link>
 

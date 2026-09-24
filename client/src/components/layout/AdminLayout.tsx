@@ -3,7 +3,7 @@ import { Link, useLocation } from 'wouter';
 import { Menu, X, Home, Hammer, Truck, ShoppingCart, Wrench, FileText, LogOut, PackageOpen, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/_core/hooks/useAuth';
-import { startLogin } from '@/const';
+import AdminLoginForm from './AdminLoginForm';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -45,7 +45,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   if (!user) {
-    return <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4"><div className="max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-8 text-center text-white shadow-2xl"><img src="/manus-storage/3btrading-logo_4274decd.png" alt="3BTRADING" className="mx-auto mb-5 h-14 w-14 object-contain" /><h1 className="text-2xl font-bold">Accès à la console interne</h1><p className="mt-3 text-sm leading-6 text-slate-300">Connectez-vous avec un compte autorisé pour gérer les publications, les stocks et les opérations 3BTRADING.</p><Button onClick={() => startLogin()} className="mt-6 w-full bg-amber-500 text-slate-950 hover:bg-amber-400">Se connecter</Button><Link href="/" className="mt-4 inline-block text-sm text-slate-400 hover:text-white">Retour à la vitrine</Link></div></div>;
+    return <AdminLoginForm />;
   }
 
   if (user.role !== 'ADMIN') {
@@ -58,7 +58,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <aside className={`${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} ${sidebarOpen ? 'lg:w-72' : 'lg:w-20'} fixed lg:sticky top-0 z-40 h-screen border-r border-slate-200 bg-white transition-all duration-300 flex flex-col shadow-xl lg:shadow-none`}>
         <div className="h-20 border-b border-slate-200 flex items-center justify-between px-4">
           <Link href="/admin" className="flex items-center gap-3 min-w-0">
-            <img src="/manus-storage/3btrading-logo_4274decd.png" alt="3BTRADING" className="h-9 w-9 object-contain shrink-0" />
+            <img src="/files/3btrading/logo.png" alt="3BTRADING" className="h-9 w-9 object-contain shrink-0" />
             {sidebarOpen && <div className="min-w-0"><div className="font-extrabold tracking-tight text-slate-900">3BTRADING</div><div className="text-[10px] uppercase tracking-[0.2em] text-amber-600 font-bold">Business Console</div></div>}
           </Link>
           <button onClick={() => setSidebarOpen(value => !value)} className="hidden lg:block p-2 rounded-lg hover:bg-slate-100 text-slate-500" aria-label="Rétracter le menu">{sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button>

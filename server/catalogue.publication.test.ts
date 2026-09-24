@@ -77,7 +77,7 @@ describe('catalogue publication flow', () => {
       enVente: true,
       enLocation: true,
       description: 'Machine publiée pour vérifier le flux partagé.',
-      images: ['/manus-storage/test-pelle.png'],
+      images: ['/files/test-pelle.png'],
       specifications: { Puissance: '160 kW' },
       isPublished: true,
       isFeatured: true,
@@ -89,7 +89,7 @@ describe('catalogue publication flow', () => {
       id: 'MAC-INTEGRATION-001',
       publie: true,
       immatriculation: 'SN-TEST-001',
-      imagesGalerie: ['/manus-storage/test-pelle.png'],
+      imagesGalerie: ['/files/test-pelle.png'],
     });
 
     const detail = await publicCaller.catalogue.getPublishedMachineById({ id: 'MAC-INTEGRATION-001' });

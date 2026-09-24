@@ -69,7 +69,7 @@ export default function Home() {
       <section className="relative overflow-hidden bg-slate-950 text-white">
         <div className="absolute inset-0 opacity-40">
           <img
-            src="/manus-storage/3btrading-hero-bg_8a60d44e.png"
+            src="/files/3btrading/hero-bg.png"
             alt="Chantier de Travaux Publics 3BTRADING"
             className="w-full h-full object-cover"
           />

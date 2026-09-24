@@ -56,7 +56,7 @@ describe('catalogue.uploadImage', () => {
   });
 
   it('convertit et transmet une image valide au stockage persistant', async () => {
-    storagePutMock.mockResolvedValueOnce({ key: '3btrading/catalogue/photo.png', url: '/manus-storage/photo.png' });
+    storagePutMock.mockResolvedValueOnce({ key: '3btrading/catalogue/photo.png', url: '/files/photo.png' });
     const caller = appRouter.createCaller(createContext());
 
     const result = await caller.catalogue.uploadImage({
@@ -65,7 +65,7 @@ describe('catalogue.uploadImage', () => {
       dataBase64: Buffer.from('image-bytes').toString('base64'),
     });
 
-    expect(result.url).toBe('/manus-storage/photo.png');
+    expect(result.url).toBe('/files/photo.png');
     expect(storagePutMock).toHaveBeenCalledWith(
       expect.stringContaining('3btrading/catalogue/'),
       expect.any(Buffer),

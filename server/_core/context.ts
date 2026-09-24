@@ -1,6 +1,7 @@
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import type { User } from "../../generated/prisma/client";
-import { sdk } from "./sdk";
+import { getSessionTokenFromRequest, verifySessionToken } from "./auth";
+import * as db from "../db";
 
 export type TrpcContext = {
   req: CreateExpressContextOptions["req"];
@@ -14,8 +15,14 @@ export async function createContext(
   let user: User | null = null;
 
   try {
-    user = await sdk.authenticateRequest(opts.req);
-  } catch (error) {
+    const token = getSessionTokenFromRequest(opts.req);
+    if (token) {
+      const session = await verifySessionToken(token);
+      if (session) {
+        user = (await db.getUserById(session.userId)) ?? null;
+      }
+    }
+  } catch {
     // Authentication is optional for public procedures.
     user = null;
   }
