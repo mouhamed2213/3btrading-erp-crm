@@ -667,10 +667,6 @@ export type EnumModeFacturationFieldUpdateOperationsInput = {
   set?: $Enums.ModeFacturation
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type EnumStatutChantierFieldUpdateOperationsInput = {
   set?: $Enums.StatutChantier
 }
