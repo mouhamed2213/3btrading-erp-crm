@@ -108,3 +108,7 @@ temp/
 
 # Local S3-compatible storage data (if running SeaweedFS locally)
 .storage-data/
+
+# Stray compiled JS artifacts next to TS source (should never be committed)
+server/**/*.js
+client/src/**/*.js
