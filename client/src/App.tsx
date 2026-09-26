@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Routes } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
 import AdminLayout from "./components/layout/AdminLayout";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -17,69 +17,69 @@ import Home from "./pages/Home";
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/catalogue/:type/:id" component={CatalogueDetail} />
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/catalogue/:type/:id" element={<CatalogueDetail />} />
       <Route
         path="/admin"
-        component={() => (
+        element={
           <AdminLayout>
             <Dashboard />
           </AdminLayout>
-        )}
+        }
       />
       <Route
         path="/admin/chantiers"
-        component={() => (
+        element={
           <AdminLayout>
             <Chantiers />
           </AdminLayout>
-        )}
+        }
       />
       <Route
         path="/admin/locations"
-        component={() => (
+        element={
           <AdminLayout>
             <Locations />
           </AdminLayout>
-        )}
+        }
       />
       <Route
         path="/admin/boutique"
-        component={() => (
+        element={
           <AdminLayout>
             <Boutique />
           </AdminLayout>
-        )}
+        }
       />
       <Route
         path="/admin/catalogue"
-        component={() => (
+        element={
           <AdminLayout>
             <Catalogue />
           </AdminLayout>
-        )}
+        }
       />
       <Route
         path="/admin/atelier"
-        component={() => (
+        element={
           <AdminLayout>
             <Atelier />
           </AdminLayout>
-        )}
+        }
       />
       <Route
         path="/admin/facturation"
-        component={() => (
+        element={
           <AdminLayout>
             <Facturation />
           </AdminLayout>
-        )}
+        }
       />
-      <Route path={"/404"} component={NotFound} />
+      <Route path="/404" element={<NotFound />} />
       {/* Final fallback route */}
-      <Route component={NotFound} />
-    </Switch>
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 
