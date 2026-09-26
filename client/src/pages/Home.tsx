@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Briefcase, Truck, Wrench, ArrowRight, CheckCircle2, ShieldCheck, Phone, Mail, MapPin, ChevronRight, Star, Image as ImageIcon } from 'lucide-react';
 import { getPublishedMachines, getPublishedPieces } from '@/services/catalogStore';
-import { Link } from 'wouter';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { trpc } from '@/lib/trpc';
 
@@ -88,13 +88,13 @@ export default function Home() {
               Expertise globale en terrassement, location d'engins clés en main (chauffeur & carburant inclus) et distribution de pièces d'origine certifiée OEM.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href="#contact">
+              <a to="#contact">
                 <Button size="lg" className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white font-bold px-8 py-4 shadow-lg shadow-amber-600/20">
                   Demander un Devis Gratuit
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </a>
-              <a href="#catalogue">
+              <a to="#catalogue">
                 <Button
                   size="lg"
                   variant="outline"
@@ -103,7 +103,7 @@ export default function Home() {
                   Explorer le Catalogue
                 </Button>
               </a>
-              <Link href="/admin" className="inline-flex">
+              <Link to="/admin" className="inline-flex">
                 <Button
                   size="lg"
                   variant="ghost"
@@ -160,7 +160,7 @@ export default function Home() {
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-600" /> Suivi de chantier rigoureux</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-600" /> Équipe d'ingénieurs dédiée</li>
               </ul>
-              <a href="#contact" className="inline-flex items-center text-amber-600 font-semibold hover:text-amber-700">
+              <a to="#contact" className="inline-flex items-center text-amber-600 font-semibold hover:text-amber-700">
                 Lancer un chantier <ChevronRight className="ml-1 h-4 w-4" />
               </a>
             </Card>
@@ -180,7 +180,7 @@ export default function Home() {
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-blue-600" /> Tarifs dégressifs transparents</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-blue-600" /> Partenaires : paiement à terme</li>
               </ul>
-              <a href="#catalogue" className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700">
+              <a to="#catalogue" className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700">
                 Voir les engins dispo <ChevronRight className="ml-1 h-4 w-4" />
               </a>
             </Card>
@@ -200,7 +200,7 @@ export default function Home() {
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> Atelier mécanique intégré</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> SAV & maintenance garantie</li>
               </ul>
-              <a href="#catalogue" className="inline-flex items-center text-emerald-600 font-semibold hover:text-emerald-700">
+              <a to="#catalogue" className="inline-flex items-center text-emerald-600 font-semibold hover:text-emerald-700">
                 Explorer le stock <ChevronRight className="ml-1 h-4 w-4" />
               </a>
             </Card>
@@ -291,10 +291,10 @@ export default function Home() {
                         </div>
                       )}
                       <div className="pt-4 grid grid-cols-2 gap-2">
-                        <Link href={`/catalogue/machine/${machine.id}`} className="inline-flex items-center justify-center rounded-md border border-slate-200 px-3 py-2 text-center text-xs font-bold text-slate-700 transition-colors hover:border-amber-500 hover:text-amber-700">
+                        <Link to={`/catalogue/machine/${machine.id}`} className="inline-flex items-center justify-center rounded-md border border-slate-200 px-3 py-2 text-center text-xs font-bold text-slate-700 transition-colors hover:border-amber-500 hover:text-amber-700">
                           Voir les détails
                         </Link>
-                        <Link href="/#contact" className="inline-flex items-center justify-center rounded-md bg-slate-900 px-3 py-2 text-center text-xs font-bold text-white transition-colors hover:bg-slate-800">
+                        <Link to="/#contact" className="inline-flex items-center justify-center rounded-md bg-slate-900 px-3 py-2 text-center text-xs font-bold text-white transition-colors hover:bg-slate-800">
                           Réserver / Acheter
                         </Link>
                       </div>
@@ -321,8 +321,8 @@ export default function Home() {
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
-                    <Link href={`/catalogue/piece/${piece.id}`} className="inline-flex items-center justify-center rounded-md border border-slate-200 px-2 py-2 text-center text-xs font-bold text-slate-700 hover:border-amber-500 hover:text-amber-700">Voir les détails</Link>
-                    <Link href="/#contact" className="inline-flex items-center justify-center rounded-md bg-slate-900 px-2 py-2 text-center text-xs font-bold text-white hover:bg-slate-800">Commander</Link>
+                    <Link to={`/catalogue/piece/${piece.id}`} className="inline-flex items-center justify-center rounded-md border border-slate-200 px-2 py-2 text-center text-xs font-bold text-slate-700 hover:border-amber-500 hover:text-amber-700">Voir les détails</Link>
+                    <Link to="/#contact" className="inline-flex items-center justify-center rounded-md bg-slate-900 px-2 py-2 text-center text-xs font-bold text-white hover:bg-slate-800">Commander</Link>
                   </div>
                   </div>
                 </Card>
@@ -468,9 +468,9 @@ export default function Home() {
             © {new Date().getFullYear()} 3BTRADING. Tous droits réservés. Spécialiste Travaux Publics, Location & Pièces Lourdes.
           </div>
           <div className="flex gap-6 text-sm">
-            <Link href="/admin" className="text-amber-500 hover:underline">Administration</Link>
-            <a href="#services" className="hover:text-white">Services</a>
-            <a href="#catalogue" className="hover:text-white">Catalogue</a>
+            <Link to="/admin" className="text-amber-500 hover:underline">Administration</Link>
+            <a to="#services" className="hover:text-white">Services</a>
+            <a to="#catalogue" className="hover:text-white">Catalogue</a>
           </div>
         </div>
       </footer>
