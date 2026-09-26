@@ -1,6 +1,6 @@
 import { hashPassword } from "../_core/auth";
+import { Role } from "../db/generated/prisma/client";
 import { closePrisma, prisma } from "../db/prisma";
-import { Role } from "../../generated/prisma/client";
 
 const admin = {
   email: "admin@test.test",
@@ -30,10 +30,9 @@ async function main() {
 }
 
 main()
-  .catch((error) => {
+  .catch(error => {
     console.error("[Seed] Failed:", error);
     process.exitCode = 1;
-    
   })
   .finally(async () => {
     await closePrisma();

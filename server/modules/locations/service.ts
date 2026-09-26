@@ -1,7 +1,7 @@
-import { Location } from "../../../generated/prisma/client";
-import { locationRepository } from "./repository";
+import { Location } from "../../db/generated/prisma/client";
 import { clientService } from "../clients/service";
 import { machineService } from "../machines/service";
+import { locationRepository } from "./repository";
 
 export class LocationService {
   async getAllLocations(): Promise<Location[]> {
@@ -41,7 +41,9 @@ export class LocationService {
     // Vérifier que le client peut sortir la machine
     const canWithdraw = await clientService.canWithdrawMachine(data.clientId);
     if (!canWithdraw) {
-      throw new Error("Client cannot withdraw machine: payment required or not a partner");
+      throw new Error(
+        "Client cannot withdraw machine: payment required or not a partner"
+      );
     }
 
     return locationRepository.create({
@@ -78,25 +80,40 @@ export class LocationService {
     } else if (tarifType === "ROTATION" && machine.tarifRotation) {
       return machine.tarifRotation.toNumber() * jours;
     } else if (tarifType === "DEGRESSIF" && jours > 7) {
-      return await machineService.calculateDegressiveRate(jours, machine.tarifJournalier.toNumber(), machine.tarifDegressif?.toNumber());
+      return await machineService.calculateDegressiveRate(
+        jours,
+        machine.tarifJournalier.toNumber(),
+        machine.tarifDegressif?.toNumber()
+      );
     }
 
     return machine.tarifJournalier.toNumber() * jours;
   }
 
-  async setLocationStatut(id: string, statut: "RESERVEE" | "SORTIE" | "RETOURNEE"): Promise<Location> {
+  async setLocationStatut(
+    id: string,
+    statut: "RESERVEE" | "SORTIE" | "RETOURNEE"
+  ): Promise<Location> {
     return this.updateLocation(id, { statut });
   }
 
-  async recordPayment(id: string, montant: number, modePaiement: "CASH" | "MOBILE_MONEY"): Promise<Location> {
+  async recordPayment(
+    id: string,
+    montant: number,
+    modePaiement: "CASH" | "MOBILE_MONEY"
+  ): Promise<Location> {
     const location = await this.getLocationById(id);
     if (!location) throw new Error("Location not found");
 
-    const newMontantPaye = parseFloat(location.montantPaye.toString()) + montant;
+    const newMontantPaye =
+      parseFloat(location.montantPaye.toString()) + montant;
     return this.updateLocation(id, {
       montantPaye: newMontantPaye,
       modePaiement,
-      statut: newMontantPaye >= parseFloat(location.montantTotal.toString()) ? "RETOURNEE" : "SORTIE",
+      statut:
+        newMontantPaye >= parseFloat(location.montantTotal.toString())
+          ? "RETOURNEE"
+          : "SORTIE",
     });
   }
 }

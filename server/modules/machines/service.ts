@@ -1,4 +1,4 @@
-import { Machine } from "../../../generated/prisma/client";
+import { Machine } from "../../db/generated/prisma/client";
 import { machineRepository } from "./repository";
 
 export class MachineService {
@@ -80,11 +80,18 @@ export class MachineService {
     return machineRepository.delete(id);
   }
 
-  async setMachineStatut(id: string, statut: "DISPONIBLE" | "EN_LOCATION" | "EN_MAINTENANCE" | "VENDUE"): Promise<Machine> {
+  async setMachineStatut(
+    id: string,
+    statut: "DISPONIBLE" | "EN_LOCATION" | "EN_MAINTENANCE" | "VENDUE"
+  ): Promise<Machine> {
     return machineRepository.updateStatut(id, statut);
   }
 
-  async calculateDegressiveRate(jours: number, tarifJournalier: number, tarifDegressif?: number): Promise<number> {
+  async calculateDegressiveRate(
+    jours: number,
+    tarifJournalier: number,
+    tarifDegressif?: number
+  ): Promise<number> {
     if (!tarifDegressif || jours <= 7) {
       return tarifJournalier * jours;
     }

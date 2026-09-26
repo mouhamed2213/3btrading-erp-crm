@@ -1,4 +1,4 @@
-import type { Role, User } from "../generated/prisma/client";
+import type { Role, User } from "./db/generated/prisma/client";
 import { prisma } from "./db/prisma";
 
 export type CreateUserInput = {

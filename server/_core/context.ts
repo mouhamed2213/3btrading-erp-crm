@@ -1,7 +1,7 @@
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
-import type { User } from "../../generated/prisma/client";
-import { getSessionTokenFromRequest, verifySessionToken } from "./auth";
 import * as db from "../db";
+import type { User } from "../db/generated/prisma/client";
+import { getSessionTokenFromRequest, verifySessionToken } from "./auth";
 
 export type TrpcContext = {
   req: CreateExpressContextOptions["req"];

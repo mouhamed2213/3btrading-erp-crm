@@ -1,4 +1,4 @@
-import { Piece, Prisma } from "../../../generated/prisma/client";
+import { Piece, Prisma } from "../../db/generated/prisma/client";
 
 import { prisma } from "../../db/prisma";
 

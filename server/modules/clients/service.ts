@@ -1,4 +1,4 @@
-import { Prisma, Client } from "../../../generated/prisma/client";
+import { Client } from "../../db/generated/prisma/client";
 import { clientRepository } from "./repository";
 
 export class ClientService {
@@ -73,7 +73,10 @@ export class ClientService {
     if (!client) return false;
 
     // Peut sortir si: PARTENAIRE ou solde >= 0 (payé 100%)
-    return client.typeClient === "PARTENAIRE" || parseFloat(client.solde.toString()) >= 0;
+    return (
+      client.typeClient === "PARTENAIRE" ||
+      parseFloat(client.solde.toString()) >= 0
+    );
   }
 }
 

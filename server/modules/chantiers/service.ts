@@ -1,4 +1,4 @@
-import { Chantier } from "../../../generated/prisma/client";
+import { Chantier } from "../../db/generated/prisma/client";
 import { chantierRepository } from "./repository";
 
 export class ChantierService {
@@ -81,7 +81,10 @@ export class ChantierService {
     }
   }
 
-  async setChantierStatut(id: string, statut: "PLANIFIE" | "EN_COURS" | "TERMINE" | "FACTURE"): Promise<Chantier> {
+  async setChantierStatut(
+    id: string,
+    statut: "PLANIFIE" | "EN_COURS" | "TERMINE" | "FACTURE"
+  ): Promise<Chantier> {
     return this.updateChantier(id, { statut });
   }
 }

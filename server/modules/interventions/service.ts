@@ -1,6 +1,6 @@
-import { Intervention } from "../../../generated/prisma/client";
-import { interventionRepository } from "./repository";
+import { Intervention } from "../../db/generated/prisma/client";
 import { pieceService } from "../pieces/service";
+import { interventionRepository } from "./repository";
 
 export class InterventionService {
   async getAllInterventions(): Promise<Intervention[]> {
@@ -15,7 +15,9 @@ export class InterventionService {
     return interventionRepository.findByMachineId(machineId);
   }
 
-  async getInterventionsByType(type: "MAINTENANCE_INTERNE" | "REPARATION_EXTERNE" | "SAV_GARANTIE"): Promise<Intervention[]> {
+  async getInterventionsByType(
+    type: "MAINTENANCE_INTERNE" | "REPARATION_EXTERNE" | "SAV_GARANTIE"
+  ): Promise<Intervention[]> {
     return interventionRepository.findByType(type);
   }
 
@@ -33,12 +35,19 @@ export class InterventionService {
     type: "MAINTENANCE_INTERNE" | "REPARATION_EXTERNE" | "SAV_GARANTIE";
     description: string;
     dateDebut: Date;
-    piecesUtilisees: Array<{ pieceId: string; quantite: number; prixUnitaire: number }>;
+    piecesUtilisees: Array<{
+      pieceId: string;
+      quantite: number;
+      prixUnitaire: number;
+    }>;
     coutEstime: number;
   }): Promise<Intervention> {
     // Vérifier le stock des pièces
     for (const piece of data.piecesUtilisees) {
-      const isInStock = await pieceService.isInStock(piece.pieceId, piece.quantite);
+      const isInStock = await pieceService.isInStock(
+        piece.pieceId,
+        piece.quantite
+      );
       if (!isInStock) {
         throw new Error(`Insufficient stock for piece ${piece.pieceId}`);
       }
@@ -56,7 +65,10 @@ export class InterventionService {
     } as any);
   }
 
-  async updateIntervention(id: string, data: Partial<any>): Promise<Intervention> {
+  async updateIntervention(
+    id: string,
+    data: Partial<any>
+  ): Promise<Intervention> {
     return interventionRepository.update(id, data as any);
   }
 
@@ -64,7 +76,10 @@ export class InterventionService {
     return interventionRepository.delete(id);
   }
 
-  async completeIntervention(id: string, coutReel: number): Promise<Intervention> {
+  async completeIntervention(
+    id: string,
+    coutReel: number
+  ): Promise<Intervention> {
     return this.updateIntervention(id, {
       statut: "TERMINE",
       dateFin: new Date(),
@@ -72,11 +87,18 @@ export class InterventionService {
     });
   }
 
-  async calculateCost(piecesUtilisees: Array<{ quantite: number; prixUnitaire: number }>): Promise<number> {
-    return piecesUtilisees.reduce((total, piece) => total + piece.quantite * piece.prixUnitaire, 0);
+  async calculateCost(
+    piecesUtilisees: Array<{ quantite: number; prixUnitaire: number }>
+  ): Promise<number> {
+    return piecesUtilisees.reduce(
+      (total, piece) => total + piece.quantite * piece.prixUnitaire,
+      0
+    );
   }
 
-  async consumePieces(piecesUtilisees: Array<{ pieceId: string; quantite: number }>): Promise<void> {
+  async consumePieces(
+    piecesUtilisees: Array<{ pieceId: string; quantite: number }>
+  ): Promise<void> {
     for (const piece of piecesUtilisees) {
       await pieceService.removeStock(piece.pieceId, piece.quantite);
     }

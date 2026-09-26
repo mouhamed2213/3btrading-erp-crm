@@ -1,4 +1,4 @@
-import { Intervention, Prisma } from "../../../generated/prisma/client";
+import { Intervention, Prisma } from "../../db/generated/prisma/client";
 
 import { prisma } from "../../db/prisma";
 
@@ -8,27 +8,46 @@ export class InterventionRepository {
   }
 
   async findById(id: string): Promise<Intervention | null> {
-    return prisma.intervention.findUnique({ where: { id }, include: { machine: true } });
+    return prisma.intervention.findUnique({
+      where: { id },
+      include: { machine: true },
+    });
   }
 
   async findByMachineId(machineId: string): Promise<Intervention[]> {
-    return prisma.intervention.findMany({ where: { machineId }, include: { machine: true } });
+    return prisma.intervention.findMany({
+      where: { machineId },
+      include: { machine: true },
+    });
   }
 
   async findByType(type: string): Promise<Intervention[]> {
-    return prisma.intervention.findMany({ where: { type: type as any }, include: { machine: true } });
+    return prisma.intervention.findMany({
+      where: { type: type as any },
+      include: { machine: true },
+    });
   }
 
   async findByStatut(statut: string): Promise<Intervention[]> {
-    return prisma.intervention.findMany({ where: { statut: statut as any }, include: { machine: true } });
+    return prisma.intervention.findMany({
+      where: { statut: statut as any },
+      include: { machine: true },
+    });
   }
 
   async create(data: Prisma.InterventionCreateInput): Promise<Intervention> {
     return prisma.intervention.create({ data, include: { machine: true } });
   }
 
-  async update(id: string, data: Prisma.InterventionUpdateInput): Promise<Intervention> {
-    return prisma.intervention.update({ where: { id }, data, include: { machine: true } });
+  async update(
+    id: string,
+    data: Prisma.InterventionUpdateInput
+  ): Promise<Intervention> {
+    return prisma.intervention.update({
+      where: { id },
+      data,
+      include: { machine: true },
+    });
   }
 
   async delete(id: string): Promise<void> {

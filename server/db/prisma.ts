@@ -1,11 +1,13 @@
-import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../../generated/prisma/client";
+import "dotenv/config";
+import { PrismaClient } from "./generated/prisma/client";
 
 const connectionString = `${process.env.DATABASE_URL ?? ""}`;
 
 if (!connectionString) {
-  console.warn("[Database] DATABASE_URL is not configured; database queries will fail until it is provided.");
+  console.warn(
+    "[Database] DATABASE_URL is not configured; database queries will fail until it is provided."
+  );
 }
 
 const adapter = new PrismaPg({ connectionString });

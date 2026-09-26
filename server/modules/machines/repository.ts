@@ -1,4 +1,4 @@
-import { Machine, Prisma } from "../../../generated/prisma/client";
+import { Machine, Prisma } from "../../db/generated/prisma/client";
 import { prisma } from "../../db/prisma";
 
 export class MachineRepository {

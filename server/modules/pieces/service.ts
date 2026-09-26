@@ -1,4 +1,4 @@
-import { Piece } from "../../../generated/prisma/client";
+import { Piece } from "../../db/generated/prisma/client";
 import { pieceRepository } from "./repository";
 
 export class PieceService {

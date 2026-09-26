@@ -1,6 +1,6 @@
-import { Facture } from "../../../generated/prisma/client";
-import { factureRepository } from "./repository";
+import { Facture } from "../../db/generated/prisma/client";
 import { clientService } from "../clients/service";
+import { factureRepository } from "./repository";
 
 export class FactureService {
   async getAllFactures(): Promise<Facture[]> {
@@ -114,7 +114,10 @@ export class FactureService {
     return this.updateFacture(id, { type: "DEFINITIVE" });
   }
 
-  async calculateTotals(montantHT: number, tauxTVA: number = 18): Promise<{ montantTVA: number; montantTTC: number }> {
+  async calculateTotals(
+    montantHT: number,
+    tauxTVA: number = 18
+  ): Promise<{ montantTVA: number; montantTTC: number }> {
     const montantTVA = (montantHT * tauxTVA) / 100;
     const montantTTC = montantHT + montantTVA;
     return { montantTVA, montantTTC };

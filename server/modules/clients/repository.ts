@@ -1,4 +1,4 @@
-import { Client, Prisma } from "../../../generated/prisma/client";
+import { Client, Prisma } from "../../db/generated/prisma/client";
 import { prisma } from "../../db/prisma";
 
 export class ClientRepository {

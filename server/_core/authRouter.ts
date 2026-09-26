@@ -1,14 +1,16 @@
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { Role } from "../../generated/prisma/client";
 import * as db from "../db";
+import { Role } from "../db/generated/prisma/client";
 import { createSessionToken, hashPassword, verifyPassword } from "./auth";
 import { getSessionCookieOptions } from "./cookies";
 import { publicProcedure, router } from "./trpc";
 
 const emailSchema = z.string().trim().toLowerCase().email();
-const passwordSchema = z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères.");
+const passwordSchema = z
+  .string()
+  .min(8, "Le mot de passe doit contenir au moins 8 caractères.");
 
 export const authRouter = router({
   me: publicProcedure.query(opts => opts.ctx.user),
@@ -57,10 +59,18 @@ export const authRouter = router({
       if (isFirstUser) {
         const sessionToken = await createSessionToken(user.id);
         const cookieOptions = getSessionCookieOptions(ctx.req);
-        ctx.res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+        ctx.res.cookie(COOKIE_NAME, sessionToken, {
+          ...cookieOptions,
+          maxAge: ONE_YEAR_MS,
+        });
       }
 
-      return { id: user.id, email: user.email, name: user.name, role: user.role };
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      };
     }),
 
   login: publicProcedure
@@ -86,9 +96,17 @@ export const authRouter = router({
 
       const sessionToken = await createSessionToken(user.id);
       const cookieOptions = getSessionCookieOptions(ctx.req);
-      ctx.res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+      ctx.res.cookie(COOKIE_NAME, sessionToken, {
+        ...cookieOptions,
+        maxAge: ONE_YEAR_MS,
+      });
 
-      return { id: user.id, email: user.email, name: user.name, role: user.role };
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      };
     }),
 
   logout: publicProcedure.mutation(({ ctx }) => {
