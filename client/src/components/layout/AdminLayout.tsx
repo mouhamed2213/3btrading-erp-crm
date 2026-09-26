@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'wouter';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Home, Hammer, Truck, ShoppingCart, Wrench, FileText, LogOut, PackageOpen, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/_core/hooks/useAuth';
@@ -13,7 +13,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const { user, loading, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [location] = useLocation();
+  const { pathname: location } = useLocation();
 
   const menuGroups = [
     {
@@ -73,7 +73,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 {group.items.map(item => {
                   const Icon = item.icon;
                   const active = isActive(item.href);
-                  return <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)} className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-colors ${active ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/10' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`} title={!sidebarOpen ? item.label : undefined}><Icon className="h-5 w-5 shrink-0" />{sidebarOpen && <span className="text-sm font-semibold truncate">{item.label}</span>}{sidebarOpen && active && <ChevronRight className="h-4 w-4 ml-auto opacity-70" />}</Link>;
+                  return <Link key={item.href} to={item.href} onClick={() => setMobileOpen(false)} className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-colors ${active ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/10' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`} title={!sidebarOpen ? item.label : undefined}><Icon className="h-5 w-5 shrink-0" />{sidebarOpen && <span className="text-sm font-semibold truncate">{item.label}</span>}{sidebarOpen && active && <ChevronRight className="h-4 w-4 ml-auto opacity-70" />}</Link>;
                 })}
               </div>
             </div>
