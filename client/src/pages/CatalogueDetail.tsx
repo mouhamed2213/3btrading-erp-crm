@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ArrowLeft, CheckCircle2, Image as ImageIcon, Mail, Phone, ShieldCheck, Truck, Wrench } from 'lucide-react';
-import { Link, useRoute } from 'wouter';
+import { Link, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Header from '@/components/layout/Header';
@@ -23,9 +23,9 @@ function MediaPlaceholder({ label }: { label: string }) {
 }
 
 export default function CatalogueDetail() {
-  const [, params] = useRoute('/catalogue/:type/:id');
-  const type = params?.type === 'piece' ? 'piece' : 'machine';
-  const productId = params?.id ?? '';
+  const params = useParams<{ type: string; id: string }>();
+  const type = params.type === 'piece' ? 'piece' : 'machine';
+  const productId = params.id ?? '';
   const queryInput = useMemo(() => ({ id: productId }), [productId]);
   const remoteMachineQuery = trpc.catalogue.getPublishedMachineById.useQuery(queryInput, { enabled: type === 'machine' && Boolean(productId), retry: false });
   const remotePieceQuery = trpc.catalogue.getPublishedPieceById.useQuery(queryInput, { enabled: type === 'piece' && Boolean(productId), retry: false });
@@ -54,7 +54,7 @@ export default function CatalogueDetail() {
       <main>
         <section className="bg-slate-950 text-white">
           <div className="container py-5">
-            <Link href="/#catalogue" className="inline-flex items-center gap-2 text-sm text-slate-300 hover:text-amber-400">
+            <Link to="/#catalogue" className="inline-flex items-center gap-2 text-sm text-slate-300 hover:text-amber-400">
               <ArrowLeft className="h-4 w-4" /> Retour au catalogue
             </Link>
           </div>
@@ -126,10 +126,10 @@ export default function CatalogueDetail() {
                   )}
                 </div>
                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                  <Link href={requestHref} className="inline-flex">
+                  <Link to={requestHref} className="inline-flex">
                     <Button className="w-full bg-amber-600 text-white hover:bg-amber-700"><Mail className="mr-2 h-4 w-4" /> {isMachine ? 'Réserver cet engin' : 'Demander cette pièce'}</Button>
                   </Link>
-                  <a href="tel:+2250700000033" className="inline-flex">
+                  <a to="tel:+2250700000033" className="inline-flex">
                     <Button variant="outline" className="w-full"><Phone className="mr-2 h-4 w-4" /> Appeler un conseiller</Button>
                   </a>
                 </div>
