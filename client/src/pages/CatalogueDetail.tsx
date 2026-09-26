@@ -129,7 +129,7 @@ export default function CatalogueDetail() {
                   <Link to={requestHref} className="inline-flex">
                     <Button className="w-full bg-amber-600 text-white hover:bg-amber-700"><Mail className="mr-2 h-4 w-4" /> {isMachine ? 'Réserver cet engin' : 'Demander cette pièce'}</Button>
                   </Link>
-                  <a to="tel:+2250700000033" className="inline-flex">
+                  <a href="tel:+2250700000033" className="inline-flex">
                     <Button variant="outline" className="w-full"><Phone className="mr-2 h-4 w-4" /> Appeler un conseiller</Button>
                   </a>
                 </div>
