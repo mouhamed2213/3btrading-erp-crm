@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Link } from 'wouter';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/_core/hooks/useAuth';
 
@@ -61,7 +61,7 @@ export default function AdminLoginForm() {
             {loginPending ? 'Connexion…' : 'Se connecter'}
           </Button>
         </form>
-        <Link href="/" className="mt-4 inline-block text-sm text-slate-400 hover:text-white">
+        <Link to="/" className="mt-4 inline-block text-sm text-slate-400 hover:text-white">
           Retour à la vitrine
         </Link>
       </div>
