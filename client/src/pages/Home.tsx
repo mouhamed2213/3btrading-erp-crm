@@ -88,13 +88,13 @@ export default function Home() {
               Expertise globale en terrassement, location d'engins clés en main (chauffeur & carburant inclus) et distribution de pièces d'origine certifiée OEM.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a to="#contact">
+              <a href="#contact">
                 <Button size="lg" className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white font-bold px-8 py-4 shadow-lg shadow-amber-600/20">
                   Demander un Devis Gratuit
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </a>
-              <a to="#catalogue">
+              <a href="#catalogue">
                 <Button
                   size="lg"
                   variant="outline"
@@ -160,7 +160,7 @@ export default function Home() {
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-600" /> Suivi de chantier rigoureux</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-600" /> Équipe d'ingénieurs dédiée</li>
               </ul>
-              <a to="#contact" className="inline-flex items-center text-amber-600 font-semibold hover:text-amber-700">
+              <a href="#contact" className="inline-flex items-center text-amber-600 font-semibold hover:text-amber-700">
                 Lancer un chantier <ChevronRight className="ml-1 h-4 w-4" />
               </a>
             </Card>
@@ -180,7 +180,7 @@ export default function Home() {
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-blue-600" /> Tarifs dégressifs transparents</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-blue-600" /> Partenaires : paiement à terme</li>
               </ul>
-              <a to="#catalogue" className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700">
+              <a href="#catalogue" className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700">
                 Voir les engins dispo <ChevronRight className="ml-1 h-4 w-4" />
               </a>
             </Card>
@@ -200,7 +200,7 @@ export default function Home() {
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> Atelier mécanique intégré</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> SAV & maintenance garantie</li>
               </ul>
-              <a to="#catalogue" className="inline-flex items-center text-emerald-600 font-semibold hover:text-emerald-700">
+              <a href="#catalogue" className="inline-flex items-center text-emerald-600 font-semibold hover:text-emerald-700">
                 Explorer le stock <ChevronRight className="ml-1 h-4 w-4" />
               </a>
             </Card>
@@ -469,8 +469,8 @@ export default function Home() {
           </div>
           <div className="flex gap-6 text-sm">
             <Link to="/admin" className="text-amber-500 hover:underline">Administration</Link>
-            <a to="#services" className="hover:text-white">Services</a>
-            <a to="#catalogue" className="hover:text-white">Catalogue</a>
+            <a href="#services" className="hover:text-white">Services</a>
+            <a href="#catalogue" className="hover:text-white">Catalogue</a>
           </div>
         </div>
       </footer>
