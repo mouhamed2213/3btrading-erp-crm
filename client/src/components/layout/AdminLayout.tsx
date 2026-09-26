@@ -49,7 +49,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   if (user.role !== 'ADMIN') {
-    return <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4"><div className="max-w-md rounded-2xl border border-red-900/60 bg-slate-900 p-8 text-center text-white shadow-2xl"><h1 className="text-2xl font-bold">Accès non autorisé</h1><p className="mt-3 text-sm leading-6 text-slate-300">Votre compte est bien connecté, mais il ne possède pas le rôle administrateur requis pour cette console.</p><div className="mt-6 flex gap-3"><Button onClick={() => void logout()} variant="outline" className="flex-1 border-slate-700 bg-transparent text-white hover:bg-slate-800">Se déconnecter</Button><Link href="/" className="flex-1"><Button className="w-full bg-amber-500 text-slate-950 hover:bg-amber-400">Vitrine</Button></Link></div></div></div>;
+    return <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4"><div className="max-w-md rounded-2xl border border-red-900/60 bg-slate-900 p-8 text-center text-white shadow-2xl"><h1 className="text-2xl font-bold">Accès non autorisé</h1><p className="mt-3 text-sm leading-6 text-slate-300">Votre compte est bien connecté, mais il ne possède pas le rôle administrateur requis pour cette console.</p><div className="mt-6 flex gap-3"><Button onClick={() => void logout()} variant="outline" className="flex-1 border-slate-700 bg-transparent text-white hover:bg-slate-800">Se déconnecter</Button><Link to="/" className="flex-1"><Button className="w-full bg-amber-500 text-slate-950 hover:bg-amber-400">Vitrine</Button></Link></div></div></div>;
   }
 
   return (
@@ -57,7 +57,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {mobileOpen && <button aria-label="Fermer le menu" onClick={() => setMobileOpen(false)} className="fixed inset-0 z-30 bg-slate-950/40 lg:hidden" />}
       <aside className={`${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} ${sidebarOpen ? 'lg:w-72' : 'lg:w-20'} fixed lg:sticky top-0 z-40 h-screen border-r border-slate-200 bg-white transition-all duration-300 flex flex-col shadow-xl lg:shadow-none`}>
         <div className="h-20 border-b border-slate-200 flex items-center justify-between px-4">
-          <Link href="/admin" className="flex items-center gap-3 min-w-0">
+          <Link to="/admin" className="flex items-center gap-3 min-w-0">
             <img src="/files/3btrading/logo.png" alt="3BTRADING" className="h-9 w-9 object-contain shrink-0" />
             {sidebarOpen && <div className="min-w-0"><div className="font-extrabold tracking-tight text-slate-900">3BTRADING</div><div className="text-[10px] uppercase tracking-[0.2em] text-amber-600 font-bold">Business Console</div></div>}
           </Link>
@@ -82,14 +82,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
         <div className="border-t border-slate-200 p-4 space-y-3">
           {sidebarOpen && <div className="rounded-xl bg-amber-50 border border-amber-100 p-3"><div className="text-xs font-bold text-amber-800">Conseil du jour</div><div className="text-xs text-amber-700 mt-1 leading-relaxed">Publiez les nouvelles machines depuis Catalogue & Publication pour les afficher sur la vitrine.</div></div>}
-          <Link href="/" className="block"><Button variant="outline" className="w-full justify-start border-slate-200"><LogOut className="h-4 w-4 mr-2" />{sidebarOpen && <span>Retour au site</span>}</Button></Link>
+          <Link to="/" className="block"><Button variant="outline" className="w-full justify-start border-slate-200"><LogOut className="h-4 w-4 mr-2" />{sidebarOpen && <span>Retour au site</span>}</Button></Link>
         </div>
       </aside>
 
       <div className="flex-1 min-w-0">
         <header className="sticky top-0 z-20 h-16 bg-white/90 backdrop-blur border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3"><button onClick={() => setMobileOpen(true)} className="lg:hidden p-2 rounded-lg hover:bg-slate-100" aria-label="Ouvrir le menu"><Menu className="h-5 w-5" /></button><div><p className="text-xs font-bold uppercase tracking-widest text-amber-600">Console de gestion</p><p className="text-sm font-semibold text-slate-700">{location === '/admin' ? 'Vue d’ensemble' : '3BTRADING ERP / CRM'}</p></div></div>
-          <Link href="/" className="text-sm font-semibold text-slate-500 hover:text-slate-900">Voir la vitrine <ChevronRight className="inline h-4 w-4 ml-1" /></Link>
+          <Link to="/" className="text-sm font-semibold text-slate-500 hover:text-slate-900">Voir la vitrine <ChevronRight className="inline h-4 w-4 ml-1" /></Link>
         </header>
         <main className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto">{children}</main>
       </div>
