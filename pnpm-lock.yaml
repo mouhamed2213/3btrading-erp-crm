@@ -8696,7 +8696,7 @@ snapshots:
     engines: {node: '>=14.0.0'}
 
   react-router-dom@6.30.6:
-    resolution: {integrity: sha512-0RHKZz7wwffvkU+2MFVT2NnjK44ssLEV+m0CAJaHjHToXblDs33I38YQ==}
+    resolution: {integrity: sha512-0RHKZz7wwffvkU+2MFVT2NnjK44ssLEV+m0CAJaS2Ksmorrwj7WxH00jO0SOCW26/tINUnJHToXblDs33I38YQ==}
     dependencies:
       '@remix-run/router': 1.23.4
       react-router: 6.30.6
