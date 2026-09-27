@@ -1,4 +1,4 @@
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/_core/hooks/useAuth";
 import AdminLoginForm from "../layout/AdminLoginForm";
@@ -52,5 +52,5 @@ export default function AdminGuard({ children }: AdminGuardProps) {
     );
   }
 
-  return <Navigate to="/admin" replace={false} />;
+  return <>{children}</>;
 }
