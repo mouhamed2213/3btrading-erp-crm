@@ -1,15 +1,15 @@
 import { z } from "zod";
-import { publicProcedure, router } from "../../_core/trpc";
+import { adminProcedure, router } from "../../_core/trpc";
 import { clientController } from "./controller";
 
 export const clientRouter = router({
-  list: publicProcedure.query(() => clientController.list()),
+  list: adminProcedure.query(() => clientController.list()),
 
-  getById: publicProcedure.input(z.string()).query(({ input }: { input: string }) => clientController.getById(input)),
+  getById: adminProcedure.input(z.string()).query(({ input }: { input: string }) => clientController.getById(input)),
 
-  search: publicProcedure.input(z.string()).query(({ input }: { input: string }) => clientController.search(input)),
+  search: adminProcedure.input(z.string()).query(({ input }: { input: string }) => clientController.search(input)),
 
-  create: publicProcedure
+  create: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -24,7 +24,7 @@ export const clientRouter = router({
     )
     .mutation(({ input }: any) => clientController.create(input)),
 
-  update: publicProcedure
+  update: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -41,11 +41,11 @@ export const clientRouter = router({
     )
     .mutation(({ input }: any) => clientController.update(input.id, input.data)),
 
-  delete: publicProcedure.input(z.string()).mutation(({ input }: { input: string }) => clientController.delete(input)),
+  delete: adminProcedure.input(z.string()).mutation(({ input }: { input: string }) => clientController.delete(input)),
 
-  getPartenaires: publicProcedure.query(() => clientController.getPartenaires()),
+  getPartenaires: adminProcedure.query(() => clientController.getPartenaires()),
 
-  canWithdrawMachine: publicProcedure
+  canWithdrawMachine: adminProcedure
     .input(z.string())
     .query(({ input }: { input: string }) => clientController.canWithdrawMachine(input)),
 });
