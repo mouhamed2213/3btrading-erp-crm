@@ -1,21 +1,21 @@
 import { z } from "zod";
-import { publicProcedure, router } from "../../_core/trpc";
+import { adminProcedure, router } from "../../_core/trpc";
 import { interventionController } from "./controller";
 
 export const interventionRouter = router({
-  list: publicProcedure.query(() => interventionController.list()),
+  list: adminProcedure.query(() => interventionController.list()),
 
-  getById: publicProcedure
+  getById: adminProcedure
     .input(z.string())
     .query(({ input }: { input: string }) => interventionController.getById(input)),
 
-  getActive: publicProcedure.query(() => interventionController.getActive()),
+  getActive: adminProcedure.query(() => interventionController.getActive()),
 
-  create: publicProcedure
+  create: adminProcedure
     .input(z.any())
     .mutation(({ input }: any) => interventionController.create(input)),
 
-  complete: publicProcedure
+  complete: adminProcedure
     .input(z.object({ id: z.string(), coutReel: z.number() }))
     .mutation(({ input }: any) => interventionController.complete(input.id, input.coutReel)),
 });
