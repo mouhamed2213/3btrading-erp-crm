@@ -1,27 +1,27 @@
 import { z } from "zod";
-import { publicProcedure, router } from "../../_core/trpc";
+import { adminProcedure, router } from "../../_core/trpc";
 import { machineController } from "./controller";
 
 export const machineRouter = router({
-  list: publicProcedure.query(() => machineController.list()),
+  list: adminProcedure.query(() => machineController.list()),
 
-  getById: publicProcedure
+  getById: adminProcedure
     .input(z.string())
     .query(({ input }: { input: string }) => machineController.getById(input)),
 
-  getAvailable: publicProcedure.query(() => machineController.getAvailable()),
+  getAvailable: adminProcedure.query(() => machineController.getAvailable()),
 
-  getForSale: publicProcedure.query(() => machineController.getForSale()),
+  getForSale: adminProcedure.query(() => machineController.getForSale()),
 
-  getByType: publicProcedure
+  getByType: adminProcedure
     .input(z.string())
     .query(({ input }: { input: string }) => machineController.getByType(input)),
 
-  getByMarque: publicProcedure
+  getByMarque: adminProcedure
     .input(z.string())
     .query(({ input }: { input: string }) => machineController.getByMarque(input)),
 
-  create: publicProcedure
+  create: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -40,7 +40,7 @@ export const machineRouter = router({
     )
     .mutation(({ input }: any) => machineController.create(input)),
 
-  update: publicProcedure
+  update: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -49,11 +49,11 @@ export const machineRouter = router({
     )
     .mutation(({ input }: any) => machineController.update(input.id, input.data)),
 
-  delete: publicProcedure
+  delete: adminProcedure
     .input(z.string())
     .mutation(({ input }: { input: string }) => machineController.delete(input)),
 
-  setStatut: publicProcedure
+  setStatut: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -62,7 +62,7 @@ export const machineRouter = router({
     )
     .mutation(({ input }: any) => machineController.setStatut(input.id, input.statut)),
 
-  calculateDegressiveRate: publicProcedure
+  calculateDegressiveRate: adminProcedure
     .input(
       z.object({
         jours: z.number(),
