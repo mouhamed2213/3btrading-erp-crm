@@ -3,6 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Routes } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
+import AdminGuard from "./components/guards/AdminGuard";
 import AdminLayout from "./components/layout/AdminLayout";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Atelier from "./pages/admin/Atelier";
@@ -23,57 +24,71 @@ function Router() {
       <Route
         path="/admin"
         element={
-          <AdminLayout>
-            <Dashboard />
-          </AdminLayout>
+          <AdminGuard>
+            <AdminLayout>
+              <Dashboard />
+            </AdminLayout>
+          </AdminGuard>
         }
       />
       <Route
         path="/admin/chantiers"
         element={
-          <AdminLayout>
-            <Chantiers />
-          </AdminLayout>
+          <AdminGuard>
+            <AdminLayout>
+              <Chantiers />
+            </AdminLayout>
+          </AdminGuard>
         }
       />
       <Route
         path="/admin/locations"
         element={
-          <AdminLayout>
-            <Locations />
-          </AdminLayout>
+          <AdminGuard>
+            <AdminLayout>
+              <Locations />
+            </AdminLayout>
+          </AdminGuard>
         }
       />
       <Route
         path="/admin/boutique"
         element={
-          <AdminLayout>
-            <Boutique />
-          </AdminLayout>
+          <AdminGuard>
+            <AdminLayout>
+              <Boutique />
+            </AdminLayout>
+          </AdminGuard>
         }
       />
       <Route
         path="/admin/catalogue"
         element={
-          <AdminLayout>
-            <Catalogue />
-          </AdminLayout>
+          <AdminGuard>
+            <AdminLayout>
+              <Catalogue />
+            </AdminLayout>
+          </AdminGuard>
         }
       />
       <Route
         path="/admin/atelier"
         element={
-          <AdminLayout>
-            <Atelier />
-          </AdminLayout>
+          <AdminGuard>
+            <AdminLayout>
+              <Atelier />
+            </AdminLayout>
+          </AdminGuard>
         }
       />
       <Route
         path="/admin/facturation"
         element={
-          <AdminLayout>
-            <Facturation />
-          </AdminLayout>
+          <AdminGuard>
+            <AdminLayout>
+              <Facturation />
+            </AdminLayout>
+          </AdminGuard>
         }
       />
       <Route path="/404" element={<NotFound />} />
