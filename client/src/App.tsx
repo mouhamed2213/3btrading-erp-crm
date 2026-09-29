@@ -11,7 +11,6 @@ import Boutique from "./pages/admin/Boutique";
 import Catalogue from "./pages/admin/Catalogue";
 import Chantiers from "./pages/admin/Chantiers";
 import Dashboard from "./pages/admin/Dashboard";
-import Facturation from "./pages/admin/Facturation";
 import Locations from "./pages/admin/Locations";
 import CatalogueDetail from "./pages/CatalogueDetail";
 import Home from "./pages/Home";
@@ -81,7 +80,7 @@ function Router() {
           </AdminGuard>
         }
       />
-      <Route
+      {/* <Route
         path="/admin/facturation"
         element={
           <AdminGuard>
@@ -90,7 +89,7 @@ function Router() {
             </AdminLayout>
           </AdminGuard>
         }
-      />
+      /> */}
       <Route path="/404" element={<NotFound />} />
       {/* Final fallback route */}
       <Route path="*" element={<NotFound />} />

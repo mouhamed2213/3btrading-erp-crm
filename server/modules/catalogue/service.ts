@@ -1,5 +1,5 @@
+import { MachineType } from "server/_core/schemas";
 import { catalogueRepository } from "./repository";
-import { MachineType } from "./route";
 
 const asNumber = (value: unknown) => Number(value ?? 0);
 const asStringArray = (value: unknown) =>

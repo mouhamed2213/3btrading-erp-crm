@@ -1,4 +1,3 @@
-import { MachineType } from "./route";
 import { catalogueService } from "./service";
 
 export const catalogueController = {
@@ -11,11 +10,7 @@ export const catalogueController = {
 
   getPublishedPiece: (id: string) => catalogueService.getPublishedPieceById(id),
 
-  saveMachine: (input: MachineType) =>
-    catalogueService.saveMachine(input),
-
-
-
+  saveMachine: (input: any) => catalogueService.saveMachine(input),
 
   savePiece: (input: Parameters<typeof catalogueService.savePiece>[0]) =>
     catalogueService.savePiece(input),
