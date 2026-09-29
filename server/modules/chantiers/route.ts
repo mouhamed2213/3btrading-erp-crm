@@ -1,33 +1,33 @@
 import { z } from "zod";
-import { publicProcedure, router } from "../../_core/trpc";
+import { adminProcedure, router } from "../../_core/trpc";
 import { chantierController } from "./controller";
 
 export const chantierRouter = router({
-  list: publicProcedure.query(() => chantierController.list()),
+  list: adminProcedure.query(() => chantierController.list()),
 
-  getById: publicProcedure
+  getById: adminProcedure
     .input(z.string())
     .query(({ input }: { input: string }) => chantierController.getById(input)),
 
-  getByClient: publicProcedure
+  getByClient: adminProcedure
     .input(z.string())
     .query(({ input }: { input: string }) => chantierController.getByClient(input)),
 
-  getActive: publicProcedure.query(() => chantierController.getActive()),
+  getActive: adminProcedure.query(() => chantierController.getActive()),
 
-  create: publicProcedure
+  create: adminProcedure
     .input(z.any())
     .mutation(({ input }: any) => chantierController.create(input)),
 
-  update: publicProcedure
+  update: adminProcedure
     .input(z.object({ id: z.string(), data: z.any() }))
     .mutation(({ input }: any) => chantierController.update(input.id, input.data)),
 
-  delete: publicProcedure
+  delete: adminProcedure
     .input(z.string())
     .mutation(({ input }: { input: string }) => chantierController.delete(input)),
 
-  calculateMontant: publicProcedure
+  calculateMontant: adminProcedure
     .input(
       z.object({
         modeFacturation: z.string(),

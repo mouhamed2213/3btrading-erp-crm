@@ -1,15 +1,15 @@
 import { z } from "zod";
-import { publicProcedure, router } from "../../_core/trpc";
+import { adminProcedure, router } from "../../_core/trpc";
 import { pieceController } from "./controller";
 
 export const pieceRouter = router({
-  list: publicProcedure.query(() => pieceController.list()),
+  list: adminProcedure.query(() => pieceController.list()),
 
-  getById: publicProcedure
+  getById: adminProcedure
     .input(z.string())
     .query(({ input }: { input: string }) => pieceController.getById(input)),
 
-  search: publicProcedure
+  search: adminProcedure
     .input(
       z.object({
         marque: z.string().optional(),
@@ -22,9 +22,9 @@ export const pieceRouter = router({
       pieceController.search(input.marque, input.famille, input.reference, input.oemReference)
     ),
 
-  getLowStock: publicProcedure.query(() => pieceController.getLowStock()),
+  getLowStock: adminProcedure.query(() => pieceController.getLowStock()),
 
-  create: publicProcedure
+  create: adminProcedure
     .input(z.any())
     .mutation(({ input }: any) => pieceController.create(input)),
 });
