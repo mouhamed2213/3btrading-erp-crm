@@ -14,14 +14,14 @@ datasource db {
 // USERS (AUTH)
 // ============================================================================
 model User {
-  id            Int      @id @default(autoincrement())
-  email         String   @unique
-  passwordHash  String
-  name          String?
-  role          Role     @default(USER)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  lastSignedIn  DateTime?
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  passwordHash String
+  name         String?
+  role         Role      @default(USER)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  lastSignedIn DateTime?
 
   @@map("users")
 }
@@ -35,21 +35,21 @@ enum Role {
 // CLIENTS
 // ============================================================================
 model Client {
-  id            String   @id 
-  nom           String   
-  email         String?  
-  telephone     String?  
-  adresse       String?  @db.Text
-  typeClient    TypeClient @default(STANDARD)
-  solde         Decimal  @default(0) @db.Decimal(15, 2)
-  dateCreation  DateTime @default(now())
-  contact       String?  
-  siret         String?  
-  updatedAt     DateTime @updatedAt
+  id           String     @id
+  nom          String
+  email        String?
+  telephone    String?
+  adresse      String?    @db.Text
+  typeClient   TypeClient @default(STANDARD)
+  solde        Decimal    @default(0) @db.Decimal(15, 2)
+  dateCreation DateTime   @default(now())
+  contact      String?
+  siret        String?
+  updatedAt    DateTime   @updatedAt
 
-  chantiers     Chantier[]
-  locations     Location[]
-  factures      Facture[]
+  chantiers Chantier[]
+  locations Location[]
+  factures  Facture[]
 
   @@map("clients")
 }
@@ -63,32 +63,81 @@ enum TypeClient {
 // MACHINES
 // ============================================================================
 model Machine {
-  id                String   @id 
-  nom               String   
-  type              String   
-  marque            String   
-  modele            String?  
-  annee             Int?
-  immatriculation   String?
-  statut            StatutMachine @default(DISPONIBLE)
-  tarifJournalier   Decimal  @db.Decimal(15, 2)
-  tarifRotation     Decimal? @db.Decimal(15, 2)
-  tarifDegressif    Decimal? @db.Decimal(15, 2)
-  prixVente         Decimal? @db.Decimal(15, 2)
-  enVente           Boolean  @default(false)
-  enLocation        Boolean  @default(false)
-  description       String?  @db.Text
-  images            Json     @default("[]")
-  specifications    Json     @default("{}")
-  isPublished       Boolean  @default(false)
-  isFeatured        Boolean  @default(false)
-  dateCreation      DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id              String        @id
+  nom             String
+  type            EngineType // categorie
+  marque          Brand?
+  modele        String ? // 
+  annee           Int?
+  immatriculation String?
+  statut          StatutMachine @default(DISPONIBLE)
+  tarifJournalier Decimal       @db.Decimal(15, 2)
+  tarifRotation   Decimal?      @db.Decimal(15, 2)
+  tarifDegressif  Decimal?      @db.Decimal(15, 2)
+  prixVente       Decimal?      @db.Decimal(15, 2)
+  enVente         Boolean       @default(false)
+  enLocation      Boolean       @default(false)
+  description     String?       @db.Text
+  images          Json          @default("[]")
+  specifications  Json          @default("{}")
+  isPublished     Boolean       @default(false)
+  isFeatured      Boolean       @default(false)
+  dateCreation    DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
-  locations         Location[]
-  interventions     Intervention[]
+  locations     Location[]
+  interventions Intervention[]
 
   @@map("machines")
+}
+
+enum EngineType {
+  EXCAVATOR // Pelle hydraulique
+  MINI_EXCAVATOR // Mini-pelle
+  BACKHOE_LOADER // Tractopelle
+  WHEEL_LOADER // Chargeuse sur pneus
+  TRACK_LOADER // Chargeuse sur chenilles
+  BULLDOZER // Bouteur
+  MOTOR_GRADER // Niveleuse
+  SKID_STEER // Mini-chargeuse (Bobcat type)
+  TELEHANDLER // Chariot télescopique (Manitou type)
+  AERIAL_WORK_PLATFORM // Nacelle élévatrice / PEMP
+  MOBILE_CRANE // Grue mobile
+  TOWER_CRANE // Grue à tour
+  CRANE_TRUCK // Camion grue
+  FORKLIFT // Chariot élévateur
+  DUMPER // Tombereau de chantier
+  TIPPER_TRUCK // Camion benne
+  SOIL_COMPACTOR // Compacteur de sol / Rouleau compresseur
+  TANDEM_ROLLER // Rouleau tandem / Asphalte
+  ASPHALT_PAVER // Finisseur d'enrobé
+  CONCRETE_MIXER_TRUCK // Camion toupie / Bétonnière
+  CONCRETE_PUMP // Pompe à béton
+  GENERATOR // Groupe électrogène
+  COMPRESSOR // Compresseur d'air
+}
+
+enum Brand {
+  CATERPILLAR
+  KOMATSU
+  VOLVO_CE
+  LIEBHERR
+  HITACHI
+  JOHN_DEERE
+  JCB
+  CASE
+  WACKER_NEUSON
+  BOMAG
+  SANY
+  XCMG
+  ZOOMLION
+  HYUNDAI
+  KUBOTA
+  BOBCAT
+  MANITOU
+  HAULOTTE
+  HAMM
+  VOGELE
 }
 
 enum StatutMachine {
@@ -96,30 +145,31 @@ enum StatutMachine {
   EN_LOCATION
   EN_MAINTENANCE
   VENDUE
+  
 }
 
 // ============================================================================
 // CHANTIERS (PRESTATIONS)
 // ============================================================================
 model Chantier {
-  id                String   @id 
-  clientId          String   
-  titre             String   
-  description       String?  @db.Text
-  typesTravaux      Json     // Array of work types
-  modeFacturation   ModeFacturation
-  dateDebut         DateTime
-  dateFin           DateTime?
-  statut            StatutChantier @default(PLANIFIE)
-  montantEstime     Decimal  @db.Decimal(15, 2)
-  montantReel       Decimal? @db.Decimal(15, 2)
-  volume            Decimal? @db.Decimal(12, 2) // m³ pour CUBAGE
-  heures            Decimal? @db.Decimal(12, 2) // pour HORAIRE
-  jours             Int?     // pour JOURNALIER
-  dateCreation      DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id              String          @id
+  clientId        String
+  titre           String
+  description     String?         @db.Text
+  typesTravaux    Json // Array of work types
+  modeFacturation ModeFacturation
+  dateDebut       DateTime
+  dateFin         DateTime?
+  statut          StatutChantier  @default(PLANIFIE)
+  montantEstime   Decimal         @db.Decimal(15, 2)
+  montantReel     Decimal?        @db.Decimal(15, 2)
+  volume          Decimal?        @db.Decimal(12, 2) // m³ pour CUBAGE
+  heures          Decimal?        @db.Decimal(12, 2) // pour HORAIRE
+  jours           Int? // pour JOURNALIER
+  dateCreation    DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 
-  client            Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
 
   @@index([clientId])
   @@map("chantiers")
@@ -143,22 +193,22 @@ enum StatutChantier {
 // LOCATIONS
 // ============================================================================
 model Location {
-  id            String   @id 
-  machineId     String   
-  clientId      String   
-  dateDebut     DateTime
-  dateFin       DateTime
-  jours         Int
-  tarifType     TarifType
-  montantTotal  Decimal  @db.Decimal(15, 2)
-  montantPaye   Decimal  @default(0) @db.Decimal(15, 2)
-  modePaiement  ModePaiement?
-  statut        StatutLocation @default(RESERVEE)
-  dateCreation  DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           String         @id
+  machineId    String
+  clientId     String
+  dateDebut    DateTime
+  dateFin      DateTime
+  jours        Int
+  tarifType    TarifType
+  montantTotal Decimal        @db.Decimal(15, 2)
+  montantPaye  Decimal        @default(0) @db.Decimal(15, 2)
+  modePaiement ModePaiement?
+  statut       StatutLocation @default(RESERVEE)
+  dateCreation DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 
-  machine       Machine  @relation(fields: [machineId], references: [id], onDelete: Cascade)
-  client        Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  machine Machine @relation(fields: [machineId], references: [id], onDelete: Cascade)
+  client  Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
 
   @@index([machineId])
   @@index([clientId])
@@ -181,23 +231,23 @@ enum StatutLocation {
 // PIECES DETACHEES
 // ============================================================================
 model Piece {
-  id            String   @id 
-  reference     String   @unique 
-  nom           String   
-  marque        String   
-  famille       String   
-  compatibilites Json    // Array of machine IDs
-  stock         Int      @default(0)
-  seuilAlerte   Int      @default(5)
-  prixUnitaire  Decimal  @db.Decimal(15, 2)
-  fournisseur   String?  
-  oemReference  String?
-  description   String?  @db.Text
-  images        Json     @default("[]")
-  specifications Json    @default("{}")
-  isPublished   Boolean  @default(false)
-  dateCreation  DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id             String   @id
+  reference      String   @unique
+  nom            String
+  marque         String
+  famille        String
+  compatibilites Json // Array of machine IDs
+  stock          Int      @default(0)
+  seuilAlerte    Int      @default(5)
+  prixUnitaire   Decimal  @db.Decimal(15, 2)
+  fournisseur    String?
+  oemReference   String?
+  description    String?  @db.Text
+  images         Json     @default("[]")
+  specifications Json     @default("{}")
+  isPublished    Boolean  @default(false)
+  dateCreation   DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@map("pieces")
 }
@@ -206,20 +256,20 @@ model Piece {
 // INTERVENTIONS ATELIER
 // ============================================================================
 model Intervention {
-  id            String   @id 
-  machineId     String   
-  type          TypeIntervention
-  description   String   @db.Text
-  dateDebut     DateTime
-  dateFin       DateTime?
-  piecesUtilisees Json   // Array of { pieceId, quantite, prixUnitaire }
-  coutEstime    Decimal  @db.Decimal(15, 2)
-  coutReel      Decimal? @db.Decimal(15, 2)
-  statut        StatutIntervention @default(EN_COURS)
-  dateCreation  DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              String             @id
+  machineId       String
+  type            TypeIntervention
+  description     String             @db.Text
+  dateDebut       DateTime
+  dateFin         DateTime?
+  piecesUtilisees Json // Array of { pieceId, quantite, prixUnitaire }
+  coutEstime      Decimal            @db.Decimal(15, 2)
+  coutReel        Decimal?           @db.Decimal(15, 2)
+  statut          StatutIntervention @default(EN_COURS)
+  dateCreation    DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
 
-  machine       Machine  @relation(fields: [machineId], references: [id], onDelete: Cascade)
+  machine Machine @relation(fields: [machineId], references: [id], onDelete: Cascade)
 
   @@index([machineId])
   @@map("interventions")
@@ -241,26 +291,26 @@ enum StatutIntervention {
 // FACTURES
 // ============================================================================
 model Facture {
-  id            String   @id 
-  numero        String   @unique 
-  clientId      String   
-  type          TypeFacture
-  dateEmission  DateTime
-  dateEcheance  DateTime?
-  montantHT     Decimal  @db.Decimal(15, 2)
-  tauxTVA       Decimal  @default(18) @db.Decimal(5, 2)
-  montantTVA    Decimal  @db.Decimal(15, 2)
-  montantTTC    Decimal  @db.Decimal(15, 2)
-  statut        StatutFacture @default(BROUILLON)
-  modePaiement  ModePaiement?
-  montantPaye   Decimal  @default(0) @db.Decimal(15, 2)
-  datePaiement  DateTime?
-  dateRelance   DateTime?
-  nombreRelances Int     @default(0)
-  dateCreation  DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id             String        @id
+  numero         String        @unique
+  clientId       String
+  type           TypeFacture
+  dateEmission   DateTime
+  dateEcheance   DateTime?
+  montantHT      Decimal       @db.Decimal(15, 2)
+  tauxTVA        Decimal       @default(18) @db.Decimal(5, 2)
+  montantTVA     Decimal       @db.Decimal(15, 2)
+  montantTTC     Decimal       @db.Decimal(15, 2)
+  statut         StatutFacture @default(BROUILLON)
+  modePaiement   ModePaiement?
+  montantPaye    Decimal       @default(0) @db.Decimal(15, 2)
+  datePaiement   DateTime?
+  dateRelance    DateTime?
+  nombreRelances Int           @default(0)
+  dateCreation   DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
-  client        Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
 
   @@index([clientId])
   @@map("factures")

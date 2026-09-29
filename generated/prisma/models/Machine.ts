@@ -45,8 +45,8 @@ export type MachineSumAggregateOutputType = {
 export type MachineMinAggregateOutputType = {
   id: string | null
   nom: string | null
-  type: string | null
-  marque: string | null
+  type: $Enums.EngineType | null
+  marque: $Enums.Brand | null
   modele: string | null
   annee: number | null
   immatriculation: string | null
@@ -67,8 +67,8 @@ export type MachineMinAggregateOutputType = {
 export type MachineMaxAggregateOutputType = {
   id: string | null
   nom: string | null
-  type: string | null
-  marque: string | null
+  type: $Enums.EngineType | null
+  marque: $Enums.Brand | null
   modele: string | null
   annee: number | null
   immatriculation: string | null
@@ -286,8 +286,8 @@ export type MachineGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type MachineGroupByOutputType = {
   id: string
   nom: string
-  type: string
-  marque: string
+  type: $Enums.EngineType
+  marque: $Enums.Brand | null
   modele: string | null
   annee: number | null
   immatriculation: string | null
@@ -333,8 +333,8 @@ export type MachineWhereInput = {
   NOT?: Prisma.MachineWhereInput | Prisma.MachineWhereInput[]
   id?: Prisma.StringFilter<"Machine"> | string
   nom?: Prisma.StringFilter<"Machine"> | string
-  type?: Prisma.StringFilter<"Machine"> | string
-  marque?: Prisma.StringFilter<"Machine"> | string
+  type?: Prisma.EnumEngineTypeFilter<"Machine"> | $Enums.EngineType
+  marque?: Prisma.EnumBrandNullableFilter<"Machine"> | $Enums.Brand | null
   modele?: Prisma.StringNullableFilter<"Machine"> | string | null
   annee?: Prisma.IntNullableFilter<"Machine"> | number | null
   immatriculation?: Prisma.StringNullableFilter<"Machine"> | string | null
@@ -360,7 +360,7 @@ export type MachineOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   nom?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  marque?: Prisma.SortOrder
+  marque?: Prisma.SortOrderInput | Prisma.SortOrder
   modele?: Prisma.SortOrderInput | Prisma.SortOrder
   annee?: Prisma.SortOrderInput | Prisma.SortOrder
   immatriculation?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -388,8 +388,8 @@ export type MachineWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.MachineWhereInput[]
   NOT?: Prisma.MachineWhereInput | Prisma.MachineWhereInput[]
   nom?: Prisma.StringFilter<"Machine"> | string
-  type?: Prisma.StringFilter<"Machine"> | string
-  marque?: Prisma.StringFilter<"Machine"> | string
+  type?: Prisma.EnumEngineTypeFilter<"Machine"> | $Enums.EngineType
+  marque?: Prisma.EnumBrandNullableFilter<"Machine"> | $Enums.Brand | null
   modele?: Prisma.StringNullableFilter<"Machine"> | string | null
   annee?: Prisma.IntNullableFilter<"Machine"> | number | null
   immatriculation?: Prisma.StringNullableFilter<"Machine"> | string | null
@@ -415,7 +415,7 @@ export type MachineOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   nom?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  marque?: Prisma.SortOrder
+  marque?: Prisma.SortOrderInput | Prisma.SortOrder
   modele?: Prisma.SortOrderInput | Prisma.SortOrder
   annee?: Prisma.SortOrderInput | Prisma.SortOrder
   immatriculation?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -446,8 +446,8 @@ export type MachineScalarWhereWithAggregatesInput = {
   NOT?: Prisma.MachineScalarWhereWithAggregatesInput | Prisma.MachineScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Machine"> | string
   nom?: Prisma.StringWithAggregatesFilter<"Machine"> | string
-  type?: Prisma.StringWithAggregatesFilter<"Machine"> | string
-  marque?: Prisma.StringWithAggregatesFilter<"Machine"> | string
+  type?: Prisma.EnumEngineTypeWithAggregatesFilter<"Machine"> | $Enums.EngineType
+  marque?: Prisma.EnumBrandNullableWithAggregatesFilter<"Machine"> | $Enums.Brand | null
   modele?: Prisma.StringNullableWithAggregatesFilter<"Machine"> | string | null
   annee?: Prisma.IntNullableWithAggregatesFilter<"Machine"> | number | null
   immatriculation?: Prisma.StringNullableWithAggregatesFilter<"Machine"> | string | null
@@ -470,8 +470,8 @@ export type MachineScalarWhereWithAggregatesInput = {
 export type MachineCreateInput = {
   id: string
   nom: string
-  type: string
-  marque: string
+  type: $Enums.EngineType
+  marque?: $Enums.Brand | null
   modele?: string | null
   annee?: number | null
   immatriculation?: string | null
@@ -496,8 +496,8 @@ export type MachineCreateInput = {
 export type MachineUncheckedCreateInput = {
   id: string
   nom: string
-  type: string
-  marque: string
+  type: $Enums.EngineType
+  marque?: $Enums.Brand | null
   modele?: string | null
   annee?: number | null
   immatriculation?: string | null
@@ -522,8 +522,8 @@ export type MachineUncheckedCreateInput = {
 export type MachineUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  marque?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumEngineTypeFieldUpdateOperationsInput | $Enums.EngineType
+  marque?: Prisma.NullableEnumBrandFieldUpdateOperationsInput | $Enums.Brand | null
   modele?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   immatriculation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -548,8 +548,8 @@ export type MachineUpdateInput = {
 export type MachineUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  marque?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumEngineTypeFieldUpdateOperationsInput | $Enums.EngineType
+  marque?: Prisma.NullableEnumBrandFieldUpdateOperationsInput | $Enums.Brand | null
   modele?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   immatriculation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -574,8 +574,8 @@ export type MachineUncheckedUpdateInput = {
 export type MachineCreateManyInput = {
   id: string
   nom: string
-  type: string
-  marque: string
+  type: $Enums.EngineType
+  marque?: $Enums.Brand | null
   modele?: string | null
   annee?: number | null
   immatriculation?: string | null
@@ -598,8 +598,8 @@ export type MachineCreateManyInput = {
 export type MachineUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  marque?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumEngineTypeFieldUpdateOperationsInput | $Enums.EngineType
+  marque?: Prisma.NullableEnumBrandFieldUpdateOperationsInput | $Enums.Brand | null
   modele?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   immatriculation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -622,8 +622,8 @@ export type MachineUpdateManyMutationInput = {
 export type MachineUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  marque?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumEngineTypeFieldUpdateOperationsInput | $Enums.EngineType
+  marque?: Prisma.NullableEnumBrandFieldUpdateOperationsInput | $Enums.Brand | null
   modele?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   immatriculation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -732,6 +732,14 @@ export type MachineScalarRelationFilter = {
   isNot?: Prisma.MachineWhereInput
 }
 
+export type EnumEngineTypeFieldUpdateOperationsInput = {
+  set?: $Enums.EngineType
+}
+
+export type NullableEnumBrandFieldUpdateOperationsInput = {
+  set?: $Enums.Brand | null
+}
+
 export type NullableIntFieldUpdateOperationsInput = {
   set?: number | null
   increment?: number
@@ -787,8 +795,8 @@ export type MachineUpdateOneRequiredWithoutInterventionsNestedInput = {
 export type MachineCreateWithoutLocationsInput = {
   id: string
   nom: string
-  type: string
-  marque: string
+  type: $Enums.EngineType
+  marque?: $Enums.Brand | null
   modele?: string | null
   annee?: number | null
   immatriculation?: string | null
@@ -812,8 +820,8 @@ export type MachineCreateWithoutLocationsInput = {
 export type MachineUncheckedCreateWithoutLocationsInput = {
   id: string
   nom: string
-  type: string
-  marque: string
+  type: $Enums.EngineType
+  marque?: $Enums.Brand | null
   modele?: string | null
   annee?: number | null
   immatriculation?: string | null
@@ -853,8 +861,8 @@ export type MachineUpdateToOneWithWhereWithoutLocationsInput = {
 export type MachineUpdateWithoutLocationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  marque?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumEngineTypeFieldUpdateOperationsInput | $Enums.EngineType
+  marque?: Prisma.NullableEnumBrandFieldUpdateOperationsInput | $Enums.Brand | null
   modele?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   immatriculation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -878,8 +886,8 @@ export type MachineUpdateWithoutLocationsInput = {
 export type MachineUncheckedUpdateWithoutLocationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  marque?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumEngineTypeFieldUpdateOperationsInput | $Enums.EngineType
+  marque?: Prisma.NullableEnumBrandFieldUpdateOperationsInput | $Enums.Brand | null
   modele?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   immatriculation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -903,8 +911,8 @@ export type MachineUncheckedUpdateWithoutLocationsInput = {
 export type MachineCreateWithoutInterventionsInput = {
   id: string
   nom: string
-  type: string
-  marque: string
+  type: $Enums.EngineType
+  marque?: $Enums.Brand | null
   modele?: string | null
   annee?: number | null
   immatriculation?: string | null
@@ -928,8 +936,8 @@ export type MachineCreateWithoutInterventionsInput = {
 export type MachineUncheckedCreateWithoutInterventionsInput = {
   id: string
   nom: string
-  type: string
-  marque: string
+  type: $Enums.EngineType
+  marque?: $Enums.Brand | null
   modele?: string | null
   annee?: number | null
   immatriculation?: string | null
@@ -969,8 +977,8 @@ export type MachineUpdateToOneWithWhereWithoutInterventionsInput = {
 export type MachineUpdateWithoutInterventionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  marque?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumEngineTypeFieldUpdateOperationsInput | $Enums.EngineType
+  marque?: Prisma.NullableEnumBrandFieldUpdateOperationsInput | $Enums.Brand | null
   modele?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   immatriculation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -994,8 +1002,8 @@ export type MachineUpdateWithoutInterventionsInput = {
 export type MachineUncheckedUpdateWithoutInterventionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  marque?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumEngineTypeFieldUpdateOperationsInput | $Enums.EngineType
+  marque?: Prisma.NullableEnumBrandFieldUpdateOperationsInput | $Enums.Brand | null
   modele?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   immatriculation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1173,8 +1181,8 @@ export type $MachinePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     nom: string
-    type: string
-    marque: string
+    type: $Enums.EngineType
+    marque: $Enums.Brand | null
     modele: string | null
     annee: number | null
     immatriculation: string | null
@@ -1619,8 +1627,8 @@ export interface Prisma__MachineClient<T, Null = never, ExtArgs extends runtime.
 export interface MachineFieldRefs {
   readonly id: Prisma.FieldRef<"Machine", 'String'>
   readonly nom: Prisma.FieldRef<"Machine", 'String'>
-  readonly type: Prisma.FieldRef<"Machine", 'String'>
-  readonly marque: Prisma.FieldRef<"Machine", 'String'>
+  readonly type: Prisma.FieldRef<"Machine", 'EngineType'>
+  readonly marque: Prisma.FieldRef<"Machine", 'Brand'>
   readonly modele: Prisma.FieldRef<"Machine", 'String'>
   readonly annee: Prisma.FieldRef<"Machine", 'Int'>
   readonly immatriculation: Prisma.FieldRef<"Machine", 'String'>

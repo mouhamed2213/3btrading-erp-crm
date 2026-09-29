@@ -1,67 +1,54 @@
-import { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Wrench } from 'lucide-react';
-import { mockInterventions } from '@/services/mock/interventions';
-import { mockMachines } from '@/services/mock/machines';
-import { mockClients } from '@/services/mock/clients';
-import { Intervention } from '@/types';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Intervention } from "@/types";
+import { Plus, Wrench } from "lucide-react";
 
 export default function Atelier() {
-  const [interventions] = useState<Intervention[]>(mockInterventions);
-
-  const getTypeLabel = (type: Intervention['type']) => {
-    const labels: Record<Intervention['type'], string> = {
-      'MAINTENANCE_INTERNE': 'Maintenance Interne',
-      'REPARATION_EXTERNE': 'Réparation Externe',
-      'SAV_GARANTIE': 'SAV Garantie',
+  const getTypeLabel = (type: Intervention["type"]) => {
+    const labels: Record<Intervention["type"], string> = {
+      MAINTENANCE_INTERNE: "Maintenance Interne",
+      REPARATION_EXTERNE: "Réparation Externe",
+      SAV_GARANTIE: "SAV Garantie",
     };
     return labels[type];
   };
 
-  const getTypeColor = (type: Intervention['type']) => {
-    const colors: Record<Intervention['type'], string> = {
-      'MAINTENANCE_INTERNE': 'bg-blue-100 text-blue-800',
-      'REPARATION_EXTERNE': 'bg-amber-100 text-amber-800',
-      'SAV_GARANTIE': 'bg-green-100 text-green-800',
+  const getTypeColor = (type: Intervention["type"]) => {
+    const colors: Record<Intervention["type"], string> = {
+      MAINTENANCE_INTERNE: "bg-blue-100 text-blue-800",
+      REPARATION_EXTERNE: "bg-amber-100 text-amber-800",
+      SAV_GARANTIE: "bg-green-100 text-green-800",
     };
     return colors[type];
   };
 
-  const getStatutColor = (statut: Intervention['statut']) => {
-    const colors: Record<Intervention['statut'], string> = {
-      'PLANIFIEE': 'bg-slate-100 text-slate-800',
-      'EN_COURS': 'bg-amber-100 text-amber-800',
-      'TERMINEZ': 'bg-green-100 text-green-800',
+  const getStatutColor = (statut: Intervention["statut"]) => {
+    const colors: Record<Intervention["statut"], string> = {
+      PLANIFIEE: "bg-slate-100 text-slate-800",
+      EN_COURS: "bg-amber-100 text-amber-800",
+      TERMINEZ: "bg-green-100 text-green-800",
     };
     return colors[statut];
   };
 
   const getMachineName = (machineId: string) => {
-    return mockMachines.find(m => m.id === machineId)?.nom || 'Inconnu';
+    return "Inconnu";
   };
 
   const getClientName = (clientId?: string) => {
-    if (!clientId) return '-';
-    return mockClients.find(c => c.id === clientId)?.nom || 'Inconnu';
+    if (!clientId) return "-";
+    return "Inconnu";
   };
-
-  const interventionsParType = {
-    MAINTENANCE_INTERNE: interventions.filter(i => i.type === 'MAINTENANCE_INTERNE'),
-    REPARATION_EXTERNE: interventions.filter(i => i.type === 'REPARATION_EXTERNE'),
-    SAV_GARANTIE: interventions.filter(i => i.type === 'SAV_GARANTIE'),
-  };
-
-  const totalCoutReparations = interventionsParType.REPARATION_EXTERNE
-    .filter(i => i.coutReel)
-    .reduce((sum, i) => sum + (i.coutReel || 0), 0);
-
-  const totalCoutMaintenance = interventionsParType.MAINTENANCE_INTERNE
-    .filter(i => i.coutReel)
-    .reduce((sum, i) => sum + (i.coutReel || 0), 0);
 
   const InterventionTable = ({ data }: { data: Intervention[] }) => (
     <div className="overflow-x-auto">
@@ -79,20 +66,25 @@ export default function Atelier() {
         <TableBody>
           {data.map(intervention => (
             <TableRow key={intervention.id}>
-              <TableCell className="font-medium">{getMachineName(intervention.machineId)}</TableCell>
+              <TableCell className="font-medium">
+                {getMachineName(intervention.machineId)}
+              </TableCell>
               <TableCell>
                 <div>
                   <p className="font-medium">{intervention.description}</p>
                   {intervention.clientId && (
-                    <p className="text-sm text-muted-foreground">Client: {getClientName(intervention.clientId)}</p>
+                    <p className="text-sm text-muted-foreground">
+                      Client: {getClientName(intervention.clientId)}
+                    </p>
                   )}
                 </div>
               </TableCell>
               <TableCell className="text-sm">
-                {new Date(intervention.dateDebut).toLocaleDateString('fr-FR')}
+                {new Date(intervention.dateDebut).toLocaleDateString("fr-FR")}
                 {intervention.dateFin && (
                   <>
-                    <br />→ {new Date(intervention.dateFin).toLocaleDateString('fr-FR')}
+                    <br />→{" "}
+                    {new Date(intervention.dateFin).toLocaleDateString("fr-FR")}
                   </>
                 )}
               </TableCell>
@@ -138,7 +130,9 @@ export default function Atelier() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Atelier Mécanique</h1>
-          <p className="text-muted-foreground">Gestion des interventions et maintenance</p>
+          <p className="text-muted-foreground">
+            Gestion des interventions et maintenance
+          </p>
         </div>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
@@ -149,26 +143,26 @@ export default function Atelier() {
       {/* KPI */}
       <div className="grid md:grid-cols-4 gap-6">
         <Card className="p-6">
-          <p className="text-sm font-medium text-muted-foreground">Total Interventions</p>
-          <p className="text-3xl font-bold mt-2">{interventions.length}</p>
+          <p className="text-sm font-medium text-muted-foreground">
+            Total Interventions
+          </p>
+          <p className="text-3xl font-bold mt-2">{0}</p>
         </Card>
         <Card className="p-6">
           <p className="text-sm font-medium text-muted-foreground">En Cours</p>
-          <p className="text-3xl font-bold mt-2 text-amber-600">
-            {interventions.filter(i => i.statut === 'EN_COURS').length}
-          </p>
+          <p className="text-3xl font-bold mt-2 text-amber-600">{0}</p>
         </Card>
         <Card className="p-6">
-          <p className="text-sm font-medium text-muted-foreground">Coût Réparations</p>
-          <p className="text-3xl font-bold mt-2 text-orange-600">
-            {(totalCoutReparations / 1000000).toFixed(1)}M
+          <p className="text-sm font-medium text-muted-foreground">
+            Coût Réparations
           </p>
+          <p className="text-3xl font-bold mt-2 text-orange-600">{0}M</p>
         </Card>
         <Card className="p-6">
-          <p className="text-sm font-medium text-muted-foreground">Coût Maintenance</p>
-          <p className="text-3xl font-bold mt-2 text-blue-600">
-            {(totalCoutMaintenance / 1000000).toFixed(1)}M
+          <p className="text-sm font-medium text-muted-foreground">
+            Coût Maintenance
           </p>
+          <p className="text-3xl font-bold mt-2 text-blue-600">{0}M</p>
         </Card>
       </div>
 
@@ -181,34 +175,34 @@ export default function Atelier() {
               className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
             >
               <Wrench className="mr-2 h-4 w-4" />
-              Maintenance Interne ({interventionsParType.MAINTENANCE_INTERNE.length})
+              Maintenance Interne ({0})
             </TabsTrigger>
             <TabsTrigger
               value="reparations"
               className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
             >
               <Wrench className="mr-2 h-4 w-4" />
-              Réparations Externes ({interventionsParType.REPARATION_EXTERNE.length})
+              Réparations Externes ({0})
             </TabsTrigger>
             <TabsTrigger
               value="sav"
               className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
             >
               <Wrench className="mr-2 h-4 w-4" />
-              SAV Garantie ({interventionsParType.SAV_GARANTIE.length})
+              SAV Garantie ({0})
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="maintenance" className="p-6">
-            <InterventionTable data={interventionsParType.MAINTENANCE_INTERNE} />
+            <InterventionTable data={[]} />
           </TabsContent>
 
           <TabsContent value="reparations" className="p-6">
-            <InterventionTable data={interventionsParType.REPARATION_EXTERNE} />
+            <InterventionTable data={[]} />
           </TabsContent>
 
           <TabsContent value="sav" className="p-6">
-            <InterventionTable data={interventionsParType.SAV_GARANTIE} />
+            <InterventionTable data={[]} />
           </TabsContent>
         </Tabs>
       </Card>

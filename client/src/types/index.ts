@@ -2,6 +2,9 @@
 // TYPES & INTERFACES - 3BTRADING ERP/CRM
 // ============================================================================
 
+import { EngineBrand } from "@shared/const";
+import { Brand, EngineType } from "@shared/types";
+
 // ============================================================================
 // CLIENTS
 // ============================================================================
@@ -11,7 +14,7 @@ export interface Client {
   email: string;
   telephone: string;
   adresse: string;
-  typeClient: 'STANDARD' | 'PARTENAIRE';
+  typeClient: "STANDARD" | "PARTENAIRE";
   solde: number; // Solde créditeur/débiteur
   dateCreation: Date;
   contact?: string;
@@ -21,15 +24,15 @@ export interface Client {
 // ============================================================================
 // CHANTIERS (PRESTATIONS)
 // ============================================================================
-export type ModeFacturation = 'FORFAIT' | 'CUBAGE' | 'HORAIRE' | 'JOURNALIER';
-export type TypeTravail = 
-  | 'TERRASSEMENT_MASSE'
-  | 'DECAPAGE'
-  | 'FOUILLES_PROFONDES'
-  | 'TRANCHEES'
-  | 'REMBLAYAGE'
-  | 'ASSAINISSEMENT'
-  | 'FONDATIONS';
+export type ModeFacturation = "FORFAIT" | "CUBAGE" | "HORAIRE" | "JOURNALIER";
+export type TypeTravail =
+  | "TERRASSEMENT_MASSE"
+  | "DECAPAGE"
+  | "FOUILLES_PROFONDES"
+  | "TRANCHEES"
+  | "REMBLAYAGE"
+  | "ASSAINISSEMENT"
+  | "FONDATIONS";
 
 export interface Chantier {
   id: string;
@@ -40,10 +43,10 @@ export interface Chantier {
   modeFacturation: ModeFacturation;
   dateDebut: Date;
   dateFin?: Date;
-  statut: 'PLANIFIE' | 'EN_COURS' | 'TERMINE' | 'FACTURE';
+  statut: "PLANIFIE" | "EN_COURS" | "TERMINE" | "FACTURE";
   montantEstime: number;
   montantReel?: number;
-  
+
   // Champs spécifiques au mode de facturation
   volume?: number; // m³ pour CUBAGE
   heures?: number; // pour HORAIRE
@@ -52,7 +55,7 @@ export interface Chantier {
   tauxJournalier?: number; // €/jour pour JOURNALIER
   tauxParM3?: number; // €/m³ pour CUBAGE
   montantForfait?: number; // € pour FORFAIT
-  
+
   // Métadonnées
   createdAt: Date;
   updatedAt: Date;
@@ -61,24 +64,28 @@ export interface Chantier {
 // ============================================================================
 // MACHINES (LOCATION & VENTE)
 // ============================================================================
-export type TypeMachine = 'CAMION' | 'PELLE' | 'CHARGEUR' | 'BULLDOZER' | 'COMPACTEUR';
-export type StatutMachine = 'DISPONIBLE' | 'LOUE' | 'MAINTENANCE' | 'HORS_SERVICE';
+// export type TypeMachine = 'CAMION' | 'PELLE' | 'CHARGEUR' | 'BULLDOZER' | 'COMPACTEUR';
+export type StatutMachine =
+  | "DISPONIBLE"
+  | "LOUE"
+  | "MAINTENANCE"
+  | "HORS_SERVICE";
 
 export interface Machine {
   id: string;
   nom: string;
-  type: TypeMachine;
-  marque: string;
+  type: EngineType;
+  marque: Brand;
   modele: string;
   annee: number;
   immatriculation: string;
   statut: StatutMachine;
-  
+
   // Tarification Location
   tarifJournalier: number; // €/jour
   tarifRotation?: number; // €/rotation (pour camions-bennes)
   tarifDegressif?: number; // €/jour si durée > 7 jours
-  
+
   // Vente
   prixVente?: number; // € (si en vente)
   enVente: boolean;
@@ -98,8 +105,8 @@ export interface Machine {
 // ============================================================================
 // LOCATIONS
 // ============================================================================
-export type ModeLocationFacturation = 'JOURNALIER' | 'ROTATION' | 'DEGRESSIF';
-export type StatutLocation = 'RESERVEE' | 'SORTIE' | 'RETOURNEE' | 'FACTUREE';
+export type ModeLocationFacturation = "JOURNALIER" | "ROTATION" | "DEGRESSIF";
+export type StatutLocation = "RESERVEE" | "SORTIE" | "RETOURNEE" | "FACTUREE";
 
 export interface Location {
   id: string;
@@ -112,12 +119,12 @@ export interface Location {
   nombreJours: number;
   montantTotal: number;
   statut: StatutLocation;
-  
+
   // Paiement
   paiementEffectue: boolean;
-  paiementType?: 'CASH' | 'MOBILE_MONEY';
+  paiementType?: "CASH" | "MOBILE_MONEY";
   montantPaye?: number;
-  
+
   // Métadonnées
   createdAt: Date;
   updatedAt: Date;
@@ -126,15 +133,20 @@ export interface Location {
 // ============================================================================
 // PIÈCES DÉTACHÉES
 // ============================================================================
-export type MarquePiece = 'CATERPILLAR' | 'HITACHI' | 'POCLAIN' | 'KOMATSU' | 'VOLVO' | 'LIEBHERR' | 'JCB';
-export type FamillePiece = 'MOTEUR' | 'HYDRAULIQUE' | 'TRANSMISSION' | 'CHASSIS' | 'ELECTRIQUE' | 'CARROSSERIE';
+export type FamillePiece =
+  | "MOTEUR"
+  | "HYDRAULIQUE"
+  | "TRANSMISSION"
+  | "CHASSIS"
+  | "ELECTRIQUE"
+  | "CARROSSERIE";
 
 export interface Piece {
   id: string;
   nom: string;
   reference: string;
   referenceOEM: string;
-  marque: MarquePiece;
+  marque: EngineBrand;
   famille: FamillePiece;
   compatibilitesMachines: string[]; // IDs des machines compatibles
   stock: number;
@@ -148,7 +160,7 @@ export interface Piece {
   imagesGalerie?: string[];
   specifications?: Record<string, string>;
   isPublie?: boolean;
-  
+
   // Métadonnées
   createdAt: Date;
   updatedAt: Date;
@@ -157,8 +169,11 @@ export interface Piece {
 // ============================================================================
 // INTERVENTIONS ATELIER
 // ============================================================================
-export type TypeIntervention = 'MAINTENANCE_INTERNE' | 'REPARATION_EXTERNE' | 'SAV_GARANTIE';
-export type StatutIntervention = 'PLANIFIEE' | 'EN_COURS' | 'TERMINEZ';
+export type TypeIntervention =
+  | "MAINTENANCE_INTERNE"
+  | "REPARATION_EXTERNE"
+  | "SAV_GARANTIE";
+export type StatutIntervention = "PLANIFIEE" | "EN_COURS" | "TERMINEZ";
 
 export interface InterventionPiece {
   pieceId: string;
@@ -178,7 +193,7 @@ export interface Intervention {
   coutEstime?: number;
   coutReel?: number;
   clientId?: string; // Pour les réparations externes
-  
+
   // Métadonnées
   createdAt: Date;
   updatedAt: Date;
@@ -187,9 +202,14 @@ export interface Intervention {
 // ============================================================================
 // FACTURES
 // ============================================================================
-export type TypeFacture = 'PROFORMA' | 'ACOMPTE' | 'DEFINITIVE';
-export type StatutFacture = 'BROUILLON' | 'EMISE' | 'PAYEE' | 'IMPAYEE' | 'PARTIELLEMENT_PAYEE';
-export type ModeReglement = 'CASH' | 'MOBILE_MONEY';
+export type TypeFacture = "PROFORMA" | "ACOMPTE" | "DEFINITIVE";
+export type StatutFacture =
+  | "BROUILLON"
+  | "EMISE"
+  | "PAYEE"
+  | "IMPAYEE"
+  | "PARTIELLEMENT_PAYEE";
+export type ModeReglement = "CASH" | "MOBILE_MONEY";
 
 export interface FactureLigne {
   id: string;
@@ -211,19 +231,19 @@ export interface Facture {
   montantTVA: number;
   montantTTC: number;
   statut: StatutFacture;
-  
+
   // Paiement
   modePaiement?: ModeReglement;
   montantPaye?: number;
   datePaiement?: Date;
-  
+
   // Relances
   dateRelance?: Date;
   nombreRelances: number;
-  
+
   // Contenu
   lignes: FactureLigne[];
-  
+
   // Métadonnées
   createdAt: Date;
   updatedAt: Date;
@@ -261,7 +281,7 @@ export interface AlerteFacture {
 // FILTRES & RECHERCHE
 // ============================================================================
 export interface FiltreChantier {
-  statut?: Chantier['statut'];
+  statut?: Chantier["statut"];
   clientId?: string;
   typesTravaux?: TypeTravail[];
   dateDebut?: Date;
@@ -277,7 +297,7 @@ export interface FiltreLocation {
 }
 
 export interface FiltrePiece {
-  marque?: MarquePiece;
+  marque?: EngineBrand;
   famille?: FamillePiece;
   compatibilite?: string; // ID machine
   recherche?: string; // Recherche par nom/référence

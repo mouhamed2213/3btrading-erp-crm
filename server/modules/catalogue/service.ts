@@ -1,4 +1,5 @@
 import { catalogueRepository } from "./repository";
+import { MachineType } from "./route";
 
 const asNumber = (value: unknown) => Number(value ?? 0);
 const asStringArray = (value: unknown) =>
@@ -79,12 +80,7 @@ const toPiece = (row: Record<string, any>) => ({
   updatedAt: row.updatedAt,
 });
 
-type CatalogueMachineInput = Omit<
-  Parameters<typeof catalogueRepository.upsertMachine>[0],
-  "statut"
-> & {
-  statut?: "DISPONIBLE" | "LOUE" | "MAINTENANCE" | "HORS_SERVICE";
-};
+type CatalogueMachineInput = MachineType;
 
 export const catalogueService = {
   async getAdminMachines() {

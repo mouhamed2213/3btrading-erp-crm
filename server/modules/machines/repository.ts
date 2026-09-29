@@ -1,4 +1,9 @@
-import { Machine, Prisma } from "../../../generated/prisma/client";
+import {
+  Brand,
+  EngineType,
+  Machine,
+  Prisma,
+} from "../../../generated/prisma/client";
 import { prisma } from "../../db/prisma";
 
 export class MachineRepository {
@@ -40,11 +45,11 @@ export class MachineRepository {
     return this.update(id, { statut } as any);
   }
 
-  async findByType(type: string): Promise<Machine[]> {
+  async findByType(type: EngineType): Promise<Machine[]> {
     return prisma.machine.findMany({ where: { type } });
   }
 
-  async findByMarque(marque: string): Promise<Machine[]> {
+  async findByMarque(marque: Brand): Promise<Machine[]> {
     return prisma.machine.findMany({ where: { marque } });
   }
 }

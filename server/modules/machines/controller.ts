@@ -1,3 +1,4 @@
+import { Brand, EngineType } from "@shared/types";
 import { TRPCError } from "@trpc/server";
 import { machineService } from "./service";
 
@@ -54,7 +55,7 @@ export class MachineController {
     }
   }
 
-  async getByType(type: string) {
+  async getByType(type: EngineType) {
     try {
       return await machineService.getMachinesByType(type);
     } catch (error) {
@@ -65,7 +66,7 @@ export class MachineController {
     }
   }
 
-  async getByMarque(marque: string) {
+  async getByMarque(marque: Brand) {
     try {
       return await machineService.getMachinesByMarque(marque);
     } catch (error) {
@@ -121,9 +122,17 @@ export class MachineController {
     }
   }
 
-  async calculateDegressiveRate(jours: number, tarifJournalier: number, tarifDegressif?: number) {
+  async calculateDegressiveRate(
+    jours: number,
+    tarifJournalier: number,
+    tarifDegressif?: number
+  ) {
     try {
-      const montant = await machineService.calculateDegressiveRate(jours, tarifJournalier, tarifDegressif);
+      const montant = await machineService.calculateDegressiveRate(
+        jours,
+        tarifJournalier,
+        tarifDegressif
+      );
       return { montant };
     } catch (error) {
       throw new TRPCError({

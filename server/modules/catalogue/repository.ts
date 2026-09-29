@@ -1,16 +1,17 @@
-import { getPrismaClient } from '../../db/prisma';
+import { Brand, EngineType } from "@shared/types";
+import { getPrismaClient } from "../../db/prisma";
 
 const db = () => getPrismaClient();
 
 export const catalogueRepository = {
   async listAllMachines() {
-    return db().machine.findMany({ orderBy: { updatedAt: 'desc' } });
+    return db().machine.findMany({ orderBy: { updatedAt: "desc" } });
   },
 
   async listPublishedMachines() {
     return db().machine.findMany({
       where: { isPublished: true },
-      orderBy: [{ isFeatured: 'desc' }, { updatedAt: 'desc' }],
+      orderBy: [{ isFeatured: "desc" }, { updatedAt: "desc" }],
     });
   },
 
@@ -19,13 +20,13 @@ export const catalogueRepository = {
   },
 
   async listAllPieces() {
-    return db().piece.findMany({ orderBy: { updatedAt: 'desc' } });
+    return db().piece.findMany({ orderBy: { updatedAt: "desc" } });
   },
 
   async listPublishedPieces() {
     return db().piece.findMany({
       where: { isPublished: true },
-      orderBy: { updatedAt: 'desc' },
+      orderBy: { updatedAt: "desc" },
     });
   },
 
@@ -36,12 +37,12 @@ export const catalogueRepository = {
   async upsertMachine(input: {
     id: string;
     nom: string;
-    type: string;
-    marque: string;
+    type: EngineType;
+    marque: Brand;
     modele?: string;
     annee?: number;
     immatriculation?: string;
-    statut?: 'DISPONIBLE' | 'EN_LOCATION' | 'EN_MAINTENANCE' | 'VENDUE';
+    statut?: "DISPONIBLE" | "EN_LOCATION" | "EN_MAINTENANCE" | "VENDUE";
     tarifJournalier: number;
     tarifRotation?: number;
     tarifDegressif?: number;

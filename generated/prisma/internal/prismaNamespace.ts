@@ -1350,6 +1350,34 @@ export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMo
 
 
 /**
+ * Reference to a field of type 'EngineType'
+ */
+export type EnumEngineTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EngineType'>
+    
+
+
+/**
+ * Reference to a field of type 'EngineType[]'
+ */
+export type ListEnumEngineTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EngineType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Brand'
+ */
+export type EnumBrandFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Brand'>
+    
+
+
+/**
+ * Reference to a field of type 'Brand[]'
+ */
+export type ListEnumBrandFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Brand[]'>
+    
+
+
+/**
  * Reference to a field of type 'StatutMachine'
  */
 export type EnumStatutMachineFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StatutMachine'>

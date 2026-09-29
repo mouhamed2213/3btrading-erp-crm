@@ -1,3 +1,4 @@
+import { Brand, EngineType } from "@shared/enums";
 import { z } from "zod";
 import { adminProcedure, router } from "../../_core/trpc";
 import { machineController } from "./controller";
@@ -14,12 +15,16 @@ export const machineRouter = router({
   getForSale: adminProcedure.query(() => machineController.getForSale()),
 
   getByType: adminProcedure
-    .input(z.string())
-    .query(({ input }: { input: string }) => machineController.getByType(input)),
+    .input(z.enum(EngineType))
+    .query(({ input }: { input: EngineType }) =>
+      machineController.getByType(input)
+    ),
 
   getByMarque: adminProcedure
-    .input(z.string())
-    .query(({ input }: { input: string }) => machineController.getByMarque(input)),
+    .input(z.enum(Brand))
+    .query(({ input }: { input: Brand }) =>
+      machineController.getByMarque(input)
+    ),
 
   create: adminProcedure
     .input(
@@ -47,20 +52,31 @@ export const machineRouter = router({
         data: z.any(),
       })
     )
-    .mutation(({ input }: any) => machineController.update(input.id, input.data)),
+    .mutation(({ input }: any) =>
+      machineController.update(input.id, input.data)
+    ),
 
   delete: adminProcedure
     .input(z.string())
-    .mutation(({ input }: { input: string }) => machineController.delete(input)),
+    .mutation(({ input }: { input: string }) =>
+      machineController.delete(input)
+    ),
 
   setStatut: adminProcedure
     .input(
       z.object({
         id: z.string(),
-        statut: z.enum(["DISPONIBLE", "EN_LOCATION", "EN_MAINTENANCE", "VENDUE"]),
+        statut: z.enum([
+          "DISPONIBLE",
+          "EN_LOCATION",
+          "EN_MAINTENANCE",
+          "VENDUE",
+        ]),
       })
     )
-    .mutation(({ input }: any) => machineController.setStatut(input.id, input.statut)),
+    .mutation(({ input }: any) =>
+      machineController.setStatut(input.id, input.statut)
+    ),
 
   calculateDegressiveRate: adminProcedure
     .input(
@@ -71,6 +87,10 @@ export const machineRouter = router({
       })
     )
     .query(({ input }: any) =>
-      machineController.calculateDegressiveRate(input.jours, input.tarifJournalier, input.tarifDegressif)
+      machineController.calculateDegressiveRate(
+        input.jours,
+        input.tarifJournalier,
+        input.tarifDegressif
+      )
     ),
 });
