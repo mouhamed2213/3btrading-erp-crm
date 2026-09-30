@@ -108,6 +108,19 @@ export const catalogueRouter = router({
           message: "L'image ne doit pas dépasser 8 Mo.",
         });
       }
+      const isJpeg = buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+      const isPng = buffer.length >= 8 && buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+      const isWebp = buffer.length >= 12 && buffer.toString("ascii", 0, 4) === "RIFF" && buffer.toString("ascii", 8, 12) === "WEBP";
+      const matchesContentType =
+        (input.contentType === "image/jpeg" && isJpeg) ||
+        (input.contentType === "image/png" && isPng) ||
+        (input.contentType === "image/webp" && isWebp);
+      if (!matchesContentType) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Le contenu du fichier ne correspond pas au format image annoncé.",
+        });
+      }
       const extension = input.contentType.split("/")[1] ?? "bin";
       return storagePut(
         `3btrading/catalogue/${Date.now()}-${sanitizeFileName(input.fileName)}.${extension}`,
