@@ -119,7 +119,11 @@ export default function Catalogue() {
       isFeatured: item.vedette,
     }, {
       onSuccess: async () => {
-        await Promise.all([utils.catalogue.listAdminMachines.invalidate(), utils.catalogue.listPublishedMachines.invalidate()]);
+        await Promise.all([
+          utils.catalogue.listAdminMachines.invalidate(),
+          utils.catalogue.listPublishedMachines.invalidate(),
+          utils.catalogue.getPublishedMachineById.invalidate({ id: item.id }),
+        ]);
         toast.success('Visibilité de la machine mise à jour.');
       },
       onError: () => toast.error('Impossible de modifier la visibilité de cette machine.'),
@@ -147,7 +151,11 @@ export default function Catalogue() {
       isPublished: !item.publie,
     }, {
       onSuccess: async () => {
-        await Promise.all([utils.catalogue.listAdminPieces.invalidate(), utils.catalogue.listPublishedPieces.invalidate()]);
+        await Promise.all([
+          utils.catalogue.listAdminPieces.invalidate(),
+          utils.catalogue.listPublishedPieces.invalidate(),
+          utils.catalogue.getPublishedPieceById.invalidate({ id: item.id }),
+        ]);
         toast.success('Visibilité de la pièce mise à jour.');
       },
       onError: () => toast.error('Impossible de modifier la visibilité de cette pièce.'),
@@ -223,7 +231,11 @@ export default function Catalogue() {
       isFeatured: item.vedette,
     }, {
       onSuccess: async () => {
-        await Promise.all([utils.catalogue.listAdminMachines.invalidate(), utils.catalogue.listPublishedMachines.invalidate()]);
+        await Promise.all([
+          utils.catalogue.listAdminMachines.invalidate(),
+          utils.catalogue.listPublishedMachines.invalidate(),
+          utils.catalogue.getPublishedMachineById.invalidate({ id: item.id }),
+        ]);
         setOpen(false);
         toast.success(existing ? 'Machine modifiée avec succès.' : 'Machine ajoutée au catalogue.');
       },
@@ -272,7 +284,11 @@ export default function Catalogue() {
       isPublished: item.publie,
     }, {
       onSuccess: async () => {
-        await Promise.all([utils.catalogue.listAdminPieces.invalidate(), utils.catalogue.listPublishedPieces.invalidate()]);
+        await Promise.all([
+          utils.catalogue.listAdminPieces.invalidate(),
+          utils.catalogue.listPublishedPieces.invalidate(),
+          utils.catalogue.getPublishedPieceById.invalidate({ id: item.id }),
+        ]);
         setOpen(false);
         toast.success(existing ? 'Pièce modifiée avec succès.' : 'Pièce ajoutée au catalogue.');
       },
