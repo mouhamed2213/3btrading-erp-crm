@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Briefcase, Truck, Wrench, ArrowRight, CheckCircle2, ShieldCheck, Phone, Mail, MapPin, ChevronRight, Star, Image as ImageIcon } from 'lucide-react';
-import { getPublishedMachines, getPublishedPieces } from '@/services/catalogStore';
+
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { trpc } from '@/lib/trpc';
@@ -35,6 +35,7 @@ export default function Home() {
 
   const [activeTab, setActiveTab] = useState<'machines' | 'pieces'>('machines');
   const [selectedCategory, setSelectedCategory] = useState<string>('TOUS');
+  const [catalogSearch, setCatalogSearch] = useState('');
 
   const handleContactChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -55,11 +56,20 @@ export default function Home() {
 
   const remoteMachinesQuery = trpc.catalogue.listPublishedMachines.useQuery(undefined, { retry: false });
   const remotePiecesQuery = trpc.catalogue.listPublishedPieces.useQuery(undefined, { retry: false });
-  const publishedMachines = remoteMachinesQuery.data ?? getPublishedMachines();
-  const publishedPieces = remotePiecesQuery.data ?? getPublishedPieces();
-  const filteredMachines = selectedCategory === 'TOUS' 
-    ? publishedMachines 
-    : publishedMachines.filter(m => m.type.toUpperCase() === selectedCategory.toUpperCase());
+  // Le catalogue public doit toujours refléter les données publiées par le serveur.
+  // Pas de repli sur localStorage/mock : cela pourrait afficher des données obsolètes ou non publiées.
+  const publishedMachines = remoteMachinesQuery.data ?? [];
+  const publishedPieces = remotePiecesQuery.data ?? [];
+  const normalizedSearch = catalogSearch.trim().toLocaleLowerCase('fr');
+  const filteredMachines = publishedMachines.filter(machine => {
+    const matchesCategory = selectedCategory === 'TOUS' || machine.type.toUpperCase() === selectedCategory.toUpperCase();
+    const searchableText = `${machine.nom} ${machine.marque} ${machine.modele ?? ''} ${machine.type}`.toLocaleLowerCase('fr');
+    return matchesCategory && (!normalizedSearch || searchableText.includes(normalizedSearch));
+  });
+  const filteredPieces = publishedPieces.filter(piece => {
+    const searchableText = `${piece.nom} ${piece.reference} ${piece.referenceOEM ?? ''} ${piece.marque} ${piece.famille}`.toLocaleLowerCase('fr');
+    return !normalizedSearch || searchableText.includes(normalizedSearch);
+  });
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans">
@@ -240,7 +250,22 @@ export default function Home() {
             </div>
           </div>
 
-          {activeTab === 'machines' ? (
+          <div className="mb-8 max-w-md">
+            <Input
+              value={catalogSearch}
+              onChange={event => setCatalogSearch(event.target.value)}
+              placeholder={activeTab === 'machines' ? 'Rechercher une machine, une marque...' : 'Rechercher une pièce, une référence...'}
+              aria-label="Rechercher dans le catalogue"
+            />
+          </div>
+
+          {(activeTab === 'machines' ? remoteMachinesQuery.isLoading : remotePiecesQuery.isLoading) ? (
+            <p className="py-12 text-center text-slate-600" role="status">Chargement du catalogue...</p>
+          ) : (activeTab === 'machines' ? remoteMachinesQuery.isError : remotePiecesQuery.isError) ? (
+            <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center text-red-800" role="alert">
+              Le catalogue n'a pas pu être chargé. Vérifiez votre connexion puis réessayez.
+            </div>
+          ) : activeTab === 'machines' ? (
             <div>
               <div className="flex flex-wrap gap-2 mb-8">
                 {['TOUS', 'Pelle', 'Camion', 'Chargeur', 'Bulldozer', 'Compacteur'].map(cat => (
@@ -301,11 +326,12 @@ export default function Home() {
                     </div>
                   </Card>
                 ))}
+                {filteredMachines.length === 0 && <p className="col-span-full py-10 text-center text-slate-500">Aucune machine ne correspond à votre recherche.</p>}
               </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {publishedPieces.map(piece => (
+              {filteredPieces.map(piece => (
                 <Card key={piece.id} className="overflow-hidden border border-slate-200 shadow-sm">
                   <div className="relative aspect-[4/3] overflow-hidden bg-slate-950">
                     {piece.imagesGalerie?.[0] ? <img src={piece.imagesGalerie[0]} alt={piece.nom} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-slate-500"><ImageIcon className="h-8 w-8 text-amber-500" /></div>}
@@ -327,6 +353,7 @@ export default function Home() {
                   </div>
                 </Card>
               ))}
+              {filteredPieces.length === 0 && <p className="col-span-full py-10 text-center text-slate-500">Aucune pièce ne correspond à votre recherche.</p>}
             </div>
           )}
         </div>
