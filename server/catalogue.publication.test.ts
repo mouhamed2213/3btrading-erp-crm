@@ -62,7 +62,7 @@ describe('catalogue publication flow', () => {
     const admin = appRouter.createCaller(adminContext());
     const publicCaller = appRouter.createCaller(publicContext());
 
-    await admin.catalogue.saveMachine({
+    const machineInput = {
       id: 'MAC-INTEGRATION-001',
       nom: 'Pelle de validation',
       type: 'PELLE',
@@ -70,7 +70,7 @@ describe('catalogue publication flow', () => {
       modele: '320D',
       annee: 2022,
       immatriculation: 'SN-TEST-001',
-      statut: 'DISPONIBLE',
+      statut: 'DISPONIBLE' as const,
       tarifJournalier: 175000,
       tarifDegressif: 145000,
       prixVente: 85000000,
@@ -81,7 +81,8 @@ describe('catalogue publication flow', () => {
       specifications: { Puissance: '160 kW' },
       isPublished: true,
       isFeatured: true,
-    });
+    };
+    await admin.catalogue.saveMachine(machineInput);
 
     const catalogue = await publicCaller.catalogue.listPublishedMachines();
     expect(catalogue).toHaveLength(1);
@@ -99,5 +100,18 @@ describe('catalogue publication flow', () => {
       publie: true,
       specifications: { Puissance: '160 kW' },
     });
+
+    await admin.catalogue.saveMachine({
+      ...machineInput,
+      id: 'MAC-INTEGRATION-UNPUBLISHED',
+      nom: 'Machine brouillon',
+      isPublished: false,
+    });
+
+    const publicCatalogue = await publicCaller.catalogue.listPublishedMachines();
+    expect(publicCatalogue.some(machine => machine.id === 'MAC-INTEGRATION-UNPUBLISHED')).toBe(false);
+    await expect(
+      publicCaller.catalogue.getPublishedMachineById({ id: 'MAC-INTEGRATION-UNPUBLISHED' })
+    ).resolves.toBeNull();
   });
 });
