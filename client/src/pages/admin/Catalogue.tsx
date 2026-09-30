@@ -28,14 +28,7 @@ import {
   Wrench,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import {
-  getCatalogMachines,
-  getCatalogPieces,
-  saveCatalogMachines,
-  saveCatalogPieces,
-  type CatalogMachine,
-  type CatalogPiece,
-} from '@/services/catalogStore';
+import type { CatalogMachine, CatalogPiece } from '@/services/catalogStore';
 import type { TypeMachine, MarquePiece, FamillePiece } from '@/types';
 import { ImageGalleryField } from '@/components/catalogue/ImageGalleryField';
 import { trpc } from '@/lib/trpc';
@@ -58,14 +51,15 @@ const stringifySpecifications = (specifications: Record<string, string> = {}) =>
 
 export default function Catalogue() {
   const [tab, setTab] = useState<'machines' | 'pieces'>('machines');
-  const [machines, setMachines] = useState<CatalogMachine[]>(getCatalogMachines);
-  const [pieces, setPieces] = useState<CatalogPiece[]>(getCatalogPieces);
+  const [machines, setMachines] = useState<CatalogMachine[]>([]);
+  const [pieces, setPieces] = useState<CatalogPiece[]>([]);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'PUBLISHED' | 'DRAFT'>('ALL');
   const [open, setOpen] = useState(false);
   const [editingMachine, setEditingMachine] = useState<CatalogMachine | null>(null);
   const [editingPiece, setEditingPiece] = useState<CatalogPiece | null>(null);
   const [draftImages, setDraftImages] = useState<string[]>([]);
+  const utils = trpc.useUtils();
   const remoteMachinesQuery = trpc.catalogue.listAdminMachines.useQuery(undefined, { retry: false });
   const remotePiecesQuery = trpc.catalogue.listAdminPieces.useQuery(undefined, { retry: false });
   const saveMachineRemote = trpc.catalogue.saveMachine.useMutation();
@@ -78,54 +72,6 @@ export default function Catalogue() {
   useEffect(() => {
     if (remotePiecesQuery.data) setPieces(remotePiecesQuery.data as unknown as CatalogPiece[]);
   }, [remotePiecesQuery.data]);
-
-  const persistMachineRemote = (item: CatalogMachine) => {
-    saveMachineRemote.mutate({
-      id: item.id,
-      nom: item.nom,
-      type: item.type,
-      marque: item.marque,
-      modele: item.modele,
-      annee: item.annee,
-      immatriculation: item.immatriculation,
-      statut: item.statut,
-      tarifJournalier: item.tarifJournalier,
-      tarifRotation: item.tarifRotation,
-      tarifDegressif: item.tarifDegressif,
-      prixVente: item.prixVente,
-      enVente: item.enVente,
-      enLocation: true,
-      description: item.description,
-      images: item.imagesGalerie ?? [],
-      specifications: item.specifications ?? {},
-      isPublished: item.publie,
-      isFeatured: item.vedette,
-    }, {
-      onError: () => toast.info('Publication locale conservée. La synchronisation serveur sera réessayée après configuration de PostgreSQL.'),
-    });
-  };
-
-  const persistPieceRemote = (item: CatalogPiece) => {
-    savePieceRemote.mutate({
-      id: item.id,
-      reference: item.reference,
-      nom: item.nom,
-      marque: item.marque,
-      famille: item.famille,
-      compatibilites: item.compatibilitesMachines ?? [],
-      stock: item.stock,
-      seuilAlerte: item.seuilAlerte,
-      prixUnitaire: item.prixUnitaire,
-      fournisseur: item.fournisseur,
-      oemReference: item.referenceOEM,
-      description: item.description,
-      images: item.imagesGalerie ?? [],
-      specifications: item.specifications ?? {},
-      isPublished: item.publie,
-    }, {
-      onError: () => toast.info('Publication locale conservée. La synchronisation serveur sera réessayée après configuration de PostgreSQL.'),
-    });
-  };
 
   const visibleMachines = useMemo(() => {
     const q = search.toLowerCase().trim();
@@ -146,21 +92,63 @@ export default function Catalogue() {
   }, [pieces, search, statusFilter]);
 
   const toggleMachine = (id: string) => {
-    const next = machines.map(item => item.id === id ? { ...item, publie: !item.publie } : item);
-    setMachines(next);
-    saveCatalogMachines(next);
-    const updated = next.find(item => item.id === id);
-    if (updated) persistMachineRemote(updated);
-    toast.success('Visibilité du produit mise à jour.');
+    const item = machines.find(machine => machine.id === id);
+    if (!item) return;
+    saveMachineRemote.mutate({
+      id: item.id,
+      nom: item.nom,
+      type: item.type,
+      marque: item.marque,
+      modele: item.modele,
+      annee: item.annee,
+      immatriculation: item.immatriculation,
+      statut: item.statut,
+      tarifJournalier: item.tarifJournalier,
+      tarifRotation: item.tarifRotation,
+      tarifDegressif: item.tarifDegressif,
+      prixVente: item.prixVente,
+      enVente: item.enVente,
+      enLocation: true,
+      description: item.description,
+      images: item.imagesGalerie ?? [],
+      specifications: item.specifications ?? {},
+      isPublished: !item.publie,
+      isFeatured: item.vedette,
+    }, {
+      onSuccess: async () => {
+        await Promise.all([utils.catalogue.listAdminMachines.invalidate(), utils.catalogue.listPublishedMachines.invalidate()]);
+        toast.success('Visibilité de la machine mise à jour.');
+      },
+      onError: () => toast.error('Impossible de modifier la visibilité de cette machine.'),
+    });
   };
 
   const togglePiece = (id: string) => {
-    const next = pieces.map(item => item.id === id ? { ...item, publie: !item.publie } : item);
-    setPieces(next);
-    saveCatalogPieces(next);
-    const updated = next.find(item => item.id === id);
-    if (updated) persistPieceRemote(updated);
-    toast.success('Visibilité de la pièce mise à jour.');
+    const item = pieces.find(piece => piece.id === id);
+    if (!item) return;
+    savePieceRemote.mutate({
+      id: item.id,
+      reference: item.reference,
+      nom: item.nom,
+      marque: item.marque,
+      famille: item.famille,
+      compatibilites: item.compatibilitesMachines ?? [],
+      stock: item.stock,
+      seuilAlerte: item.seuilAlerte,
+      prixUnitaire: item.prixUnitaire,
+      fournisseur: item.fournisseur,
+      oemReference: item.referenceOEM,
+      description: item.description,
+      images: item.imagesGalerie ?? [],
+      specifications: item.specifications ?? {},
+      isPublished: !item.publie,
+    }, {
+      onSuccess: async () => {
+        await Promise.all([utils.catalogue.listAdminPieces.invalidate(), utils.catalogue.listPublishedPieces.invalidate()]);
+        toast.success('Visibilité de la pièce mise à jour.');
+      },
+      onError: () => toast.error('Impossible de modifier la visibilité de cette pièce.'),
+    });
   };
 
   const startNew = () => {
@@ -210,12 +198,34 @@ export default function Catalogue() {
       imagesGalerie: draftImages,
       specifications: parseSpecifications(String(form.get('specifications') || '')),
     };
-    const next = existing ? machines.map(current => current.id === existing.id ? item : current) : [item, ...machines];
-    setMachines(next);
-    saveCatalogMachines(next);
-    persistMachineRemote(item);
-    setOpen(false);
-    toast.success(existing ? 'Machine modifiée avec succès.' : 'Machine ajoutée au catalogue.');
+    saveMachineRemote.mutate({
+      id: item.id,
+      nom: item.nom,
+      type: item.type,
+      marque: item.marque,
+      modele: item.modele,
+      annee: item.annee,
+      immatriculation: item.immatriculation,
+      statut: item.statut,
+      tarifJournalier: item.tarifJournalier,
+      tarifRotation: item.tarifRotation,
+      tarifDegressif: item.tarifDegressif,
+      prixVente: item.prixVente,
+      enVente: item.enVente,
+      enLocation: true,
+      description: item.description,
+      images: item.imagesGalerie,
+      specifications: item.specifications,
+      isPublished: item.publie,
+      isFeatured: item.vedette,
+    }, {
+      onSuccess: async () => {
+        await Promise.all([utils.catalogue.listAdminMachines.invalidate(), utils.catalogue.listPublishedMachines.invalidate()]);
+        setOpen(false);
+        toast.success(existing ? 'Machine modifiée avec succès.' : 'Machine ajoutée au catalogue.');
+      },
+      onError: () => toast.error('La machine n’a pas pu être enregistrée. Vérifiez les champs et réessayez.'),
+    });
   };
 
   const savePiece = (event: React.FormEvent<HTMLFormElement>) => {
@@ -241,12 +251,30 @@ export default function Catalogue() {
       imagesGalerie: draftImages,
       specifications: parseSpecifications(String(form.get('specifications') || '')),
     };
-    const next = existing ? pieces.map(piece => piece.id === existing.id ? item : piece) : [item, ...pieces];
-    setPieces(next);
-    saveCatalogPieces(next);
-    persistPieceRemote(item);
-    setOpen(false);
-    toast.success(existing ? 'Pièce modifiée avec succès.' : 'Pièce ajoutée au catalogue.');
+    savePieceRemote.mutate({
+      id: item.id,
+      reference: item.reference,
+      nom: item.nom,
+      marque: item.marque,
+      famille: item.famille,
+      compatibilites: item.compatibilitesMachines ?? [],
+      stock: item.stock,
+      seuilAlerte: item.seuilAlerte,
+      prixUnitaire: item.prixUnitaire,
+      fournisseur: item.fournisseur,
+      oemReference: item.referenceOEM,
+      description: item.description,
+      images: item.imagesGalerie,
+      specifications: item.specifications,
+      isPublished: item.publie,
+    }, {
+      onSuccess: async () => {
+        await Promise.all([utils.catalogue.listAdminPieces.invalidate(), utils.catalogue.listPublishedPieces.invalidate()]);
+        setOpen(false);
+        toast.success(existing ? 'Pièce modifiée avec succès.' : 'Pièce ajoutée au catalogue.');
+      },
+      onError: () => toast.error('La pièce n’a pas pu être enregistrée. Vérifiez les champs et réessayez.'),
+    });
   };
 
   const modalTitle = editingMachine ? 'Modifier une machine' : editingPiece ? 'Modifier une pièce' : tab === 'machines' ? 'Ajouter une machine' : 'Ajouter une pièce';
