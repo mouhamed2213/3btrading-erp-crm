@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -51,8 +51,6 @@ const stringifySpecifications = (specifications: Record<string, string> = {}) =>
 
 export default function Catalogue() {
   const [tab, setTab] = useState<'machines' | 'pieces'>('machines');
-  const [machines, setMachines] = useState<CatalogMachine[]>([]);
-  const [pieces, setPieces] = useState<CatalogPiece[]>([]);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'PUBLISHED' | 'DRAFT'>('ALL');
   const [open, setOpen] = useState(false);
@@ -64,14 +62,19 @@ export default function Catalogue() {
   const remotePiecesQuery = trpc.catalogue.listAdminPieces.useQuery(undefined, { retry: false });
   const saveMachineRemote = trpc.catalogue.saveMachine.useMutation();
   const savePieceRemote = trpc.catalogue.savePiece.useMutation();
-
-  useEffect(() => {
-    if (remoteMachinesQuery.data) setMachines(remoteMachinesQuery.data as CatalogMachine[]);
-  }, [remoteMachinesQuery.data]);
-
-  useEffect(() => {
-    if (remotePiecesQuery.data) setPieces(remotePiecesQuery.data as unknown as CatalogPiece[]);
-  }, [remotePiecesQuery.data]);
+  const machines = (remoteMachinesQuery.data ?? []) as CatalogMachine[];
+  const pieces = (remotePiecesQuery.data ?? []) as CatalogPiece[];
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'PUBLISHED' | 'DRAFT'>('ALL');
+  const [open, setOpen] = useState(false);
+  const [editingMachine, setEditingMachine] = useState<CatalogMachine | null>(null);
+  const [editingPiece, setEditingPiece] = useState<CatalogPiece | null>(null);
+  const [draftImages, setDraftImages] = useState<string[]>([]);
+  const utils = trpc.useUtils();
+  const remoteMachinesQuery = trpc.catalogue.listAdminMachines.useQuery(undefined, { retry: false });
+  const remotePiecesQuery = trpc.catalogue.listAdminPieces.useQuery(undefined, { retry: false });
+  const saveMachineRemote = trpc.catalogue.saveMachine.useMutation();
+  const savePieceRemote = trpc.catalogue.savePiece.useMutation();
 
   const visibleMachines = useMemo(() => {
     const q = search.toLowerCase().trim();
@@ -331,7 +334,7 @@ export default function Catalogue() {
                   <label className="flex items-center gap-2 rounded-lg border p-3"><input type="checkbox" name="publie" defaultChecked={editingMachine?.publie ?? true} /> Publier en vitrine</label>
                   <label className="flex items-center gap-2 rounded-lg border p-3"><input type="checkbox" name="vedette" defaultChecked={editingMachine?.vedette} /> Mettre en vedette</label>
                 </div>
-                <DialogFooter><Button type="submit" className="bg-amber-600 hover:bg-amber-700 text-white"><Check className="h-4 w-4 mr-2" /> Enregistrer la machine</Button></DialogFooter>
+                <DialogFooter><Button type="submit" disabled={saveMachineRemote.isPending} className="bg-amber-600 hover:bg-amber-700 text-white"><Check className="h-4 w-4 mr-2" /> {saveMachineRemote.isPending ? 'Enregistrement…' : 'Enregistrer la machine'}</Button></DialogFooter>
               </form>
             ) : (
               <form onSubmit={savePiece} className="grid gap-5 py-3">
@@ -350,7 +353,7 @@ export default function Catalogue() {
                 <div><Label htmlFor="specifications">Spécifications de la pièce</Label><textarea id="specifications" name="specifications" defaultValue={stringifySpecifications(editingPiece?.specifications)} className="min-h-24 w-full rounded-md border bg-background p-3 text-sm" placeholder="Matière: Acier trempé\nCompatibilité: Caterpillar 320\nGarantie: 12 mois" /><p className="mt-1 text-xs text-slate-500">Une ligne par caractéristique au format « Libellé: valeur ».</p></div>
                 <ImageGalleryField value={draftImages} onChange={setDraftImages} />
                 <label className="flex items-center gap-2 rounded-lg border p-3 text-sm"><input type="checkbox" name="publie" defaultChecked={editingPiece?.publie ?? true} /> Publier en vitrine</label>
-                <DialogFooter><Button type="submit" className="bg-amber-600 hover:bg-amber-700 text-white"><Check className="h-4 w-4 mr-2" /> Enregistrer la pièce</Button></DialogFooter>
+                <DialogFooter><Button type="submit" disabled={savePieceRemote.isPending} className="bg-amber-600 hover:bg-amber-700 text-white"><Check className="h-4 w-4 mr-2" /> {savePieceRemote.isPending ? 'Enregistrement…' : 'Enregistrer la pièce'}</Button></DialogFooter>
               </form>
             )}
           </DialogContent>
@@ -384,7 +387,7 @@ export default function Catalogue() {
               <div className="flex items-start justify-between gap-4"><div className="flex gap-4"><div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700"><Truck className="h-6 w-6" /></div><div><div className="flex items-center gap-2"><h3 className="font-bold text-slate-900">{machine.nom}</h3><Badge variant={machine.publie ? 'default' : 'secondary'}>{machine.publie ? 'Publié' : 'Brouillon'}</Badge></div><p className="text-sm text-slate-500 mt-1">{machine.marque} · {machine.modele} · {machine.type}</p></div></div><button onClick={() => startEditMachine(machine)} className="p-2 rounded-lg hover:bg-slate-100 text-slate-500" aria-label="Modifier"><Pencil className="h-4 w-4" /></button></div>
               <p className="text-sm text-slate-600 mt-4 line-clamp-2">{machine.description}</p>
               <div className="grid grid-cols-3 gap-3 mt-5 text-sm"><div><span className="text-slate-400 block">Location / jour</span><strong>{formatMoney(machine.tarifJournalier)}</strong></div><div><span className="text-slate-400 block">Vente</span><strong>{machine.prixVente ? formatMoney(machine.prixVente) : 'Sur devis'}</strong></div><div><span className="text-slate-400 block">Statut flotte</span><strong>{machine.statut}</strong></div></div>
-              <div className="flex gap-2 mt-5 pt-4 border-t border-slate-100"><Button onClick={() => toggleMachine(machine.id)} variant="outline" className="flex-1">{machine.publie ? <><EyeOff className="h-4 w-4 mr-2" /> Dépublier</> : <><Eye className="h-4 w-4 mr-2" /> Publier</>}</Button><Button onClick={() => startEditMachine(machine)} variant="ghost"><Settings2 className="h-4 w-4 mr-2" /> Éditer</Button></div>
+              <div className="flex gap-2 mt-5 pt-4 border-t border-slate-100"><Button onClick={() => toggleMachine(machine.id)} disabled={saveMachineRemote.isPending} variant="outline" className="flex-1">{machine.publie ? <><EyeOff className="h-4 w-4 mr-2" /> Dépublier</> : <><Eye className="h-4 w-4 mr-2" /> Publier</>}</Button><Button onClick={() => startEditMachine(machine)} variant="ghost"><Settings2 className="h-4 w-4 mr-2" /> Éditer</Button></div>
             </Card>
           ))}
         </div>
@@ -395,13 +398,20 @@ export default function Catalogue() {
               <div className="flex items-start justify-between gap-4"><div className="flex gap-4"><div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-700"><Wrench className="h-6 w-6" /></div><div><div className="flex items-center gap-2"><h3 className="font-bold text-slate-900">{piece.nom}</h3><Badge variant={piece.publie ? 'default' : 'secondary'}>{piece.publie ? 'Publié' : 'Brouillon'}</Badge></div><p className="text-sm text-slate-500 mt-1">{piece.marque} · {piece.famille} · OEM {piece.referenceOEM}</p></div></div><button onClick={() => startEditPiece(piece)} className="p-2 rounded-lg hover:bg-slate-100 text-slate-500" aria-label="Modifier"><Pencil className="h-4 w-4" /></button></div>
               <p className="text-sm text-slate-600 mt-4 line-clamp-2">{piece.description}</p>
               <div className="grid grid-cols-3 gap-3 mt-5 text-sm"><div><span className="text-slate-400 block">Référence</span><strong>{piece.reference}</strong></div><div><span className="text-slate-400 block">Prix unitaire</span><strong>{formatMoney(piece.prixUnitaire)}</strong></div><div><span className="text-slate-400 block">Stock</span><strong className={piece.stock <= piece.seuilAlerte ? 'text-red-600' : 'text-emerald-600'}>{piece.stock} unités</strong></div></div>
-              <div className="flex gap-2 mt-5 pt-4 border-t border-slate-100"><Button onClick={() => togglePiece(piece.id)} variant="outline" className="flex-1">{piece.publie ? <><EyeOff className="h-4 w-4 mr-2" /> Dépublier</> : <><Eye className="h-4 w-4 mr-2" /> Publier</>}</Button><Button onClick={() => startEditPiece(piece)} variant="ghost"><Settings2 className="h-4 w-4 mr-2" /> Éditer</Button></div>
+              <div className="flex gap-2 mt-5 pt-4 border-t border-slate-100"><Button onClick={() => togglePiece(piece.id)} disabled={savePieceRemote.isPending} variant="outline" className="flex-1">{piece.publie ? <><EyeOff className="h-4 w-4 mr-2" /> Dépublier</> : <><Eye className="h-4 w-4 mr-2" /> Publier</>}</Button><Button onClick={() => startEditPiece(piece)} variant="ghost"><Settings2 className="h-4 w-4 mr-2" /> Éditer</Button></div>
             </Card>
           ))}
         </div>
       )}
 
-      {(tab === 'machines' ? visibleMachines.length === 0 : visiblePieces.length === 0) && <Card className="p-12 text-center border-dashed"><Archive className="mx-auto h-10 w-10 text-slate-300 mb-4" /><h3 className="font-bold text-slate-900">Aucun élément trouvé</h3><p className="text-slate-500 mt-2">Modifiez votre recherche ou créez une nouvelle fiche catalogue.</p></Card>}
+      {!remoteMachinesQuery.isLoading && !remotePiecesQuery.isLoading && !remoteMachinesQuery.isError && !remotePiecesQuery.isError &&
+        (tab === 'machines' ? visibleMachines.length === 0 : visiblePieces.length === 0) && (
+          <Card className="p-12 text-center border-dashed">
+            <Archive className="mx-auto h-10 w-10 text-slate-300 mb-4" />
+            <h3 className="font-bold text-slate-900">{search.trim() || statusFilter !== 'ALL' ? 'Aucun résultat' : 'Catalogue vide'}</h3>
+            <p className="text-slate-500 mt-2">{search.trim() || statusFilter !== 'ALL' ? 'Modifiez votre recherche ou le filtre de publication.' : 'Créez une première fiche pour commencer à alimenter le catalogue.'}</p>
+          </Card>
+        )}
     </div>
   );
 }
