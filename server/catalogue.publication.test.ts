@@ -82,6 +82,8 @@ describe('catalogue publication flow', () => {
       isPublished: true,
       isFeatured: true,
     };
+    await expect(publicCaller.catalogue.saveMachine(machineInput)).rejects.toMatchObject({ code: 'FORBIDDEN' });
+    await expect(publicCaller.catalogue.listAdminMachines()).rejects.toMatchObject({ code: 'FORBIDDEN' });
     await admin.catalogue.saveMachine(machineInput);
 
     const catalogue = await publicCaller.catalogue.listPublishedMachines();
