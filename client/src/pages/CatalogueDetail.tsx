@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Header from '@/components/layout/Header';
 import NotFound from '@/pages/NotFound';
-import { getCatalogMachineById, getCatalogPieceById, type CatalogMachine, type CatalogPiece } from '@/services/catalogStore';
+import type { CatalogMachine, CatalogPiece } from '@/services/catalogStore';
 import { trpc } from '@/lib/trpc';
 
 const formatMoney = (value?: number) => value ? `${value.toLocaleString('fr-FR')} FCFA` : 'Sur devis';
@@ -29,16 +29,15 @@ export default function CatalogueDetail() {
   const queryInput = useMemo(() => ({ id: productId }), [productId]);
   const remoteMachineQuery = trpc.catalogue.getPublishedMachineById.useQuery(queryInput, { enabled: type === 'machine' && Boolean(productId), retry: false });
   const remotePieceQuery = trpc.catalogue.getPublishedPieceById.useQuery(queryInput, { enabled: type === 'piece' && Boolean(productId), retry: false });
-  const fallbackItem = useMemo<CatalogMachine | CatalogPiece | undefined>(() => {
-    if (!productId) return undefined;
-    return type === 'machine' ? getCatalogMachineById(productId) : getCatalogPieceById(productId);
-  }, [productId, type]);
-  const remoteItem = type === 'machine' ? remoteMachineQuery.data : remotePieceQuery.data;
-  const item = remoteItem ?? ((remoteMachineQuery.isError || remotePieceQuery.isError) ? fallbackItem : undefined);
-  const isLoading = remoteMachineQuery.isLoading || remotePieceQuery.isLoading;
+  const item = type === 'machine' ? remoteMachineQuery.data : remotePieceQuery.data;
+  const activeQuery = type === 'machine' ? remoteMachineQuery : remotePieceQuery;
+  const isLoading = activeQuery.isLoading;
   const [activeImage, setActiveImage] = useState(0);
 
-  if (isLoading) return <div className="min-h-screen bg-slate-50" />;
+  if (isLoading) return <div className="min-h-screen bg-slate-50" role="status" aria-label="Chargement du produit" />;
+  if (activeQuery.isError) {
+    return <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6 text-center text-slate-700" role="alert">Impossible de charger ce produit. Vérifiez votre connexion puis réessayez.</div>;
+  }
   if (!item || !item.publie) return <NotFound />;
 
   const isMachine = type === 'machine';
