@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { adminProcedure, publicProcedure, router } from "../../_core/trpc";
 import { storagePut } from "../../storage";
@@ -87,14 +88,26 @@ export const catalogueRouter = router({
         contentType: z.string().refine(value => allowedImageTypes.has(value), {
           message: "Format accepté : JPG, PNG ou WebP.",
         }),
-        dataBase64: z.string().min(1),
+        dataBase64: z
+          .string()
+          .min(1)
+          .max(11_184_812)
+          .regex(/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/, {
+            message: "Le contenu de l’image est invalide.",
+          }),
       })
     )
     .mutation(async ({ input }) => {
       const buffer = Buffer.from(input.dataBase64, "base64");
-      if (!buffer.length) throw new Error("Image vide.");
-      if (buffer.length > maxImageBytes)
-        throw new Error("L'image ne doit pas dépasser 8 Mo.");
+      if (!buffer.length) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Image vide." });
+      }
+      if (buffer.length > maxImageBytes) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "L'image ne doit pas dépasser 8 Mo.",
+        });
+      }
       const extension = input.contentType.split("/")[1] ?? "bin";
       return storagePut(
         `3btrading/catalogue/${Date.now()}-${sanitizeFileName(input.fileName)}.${extension}`,
