@@ -2,21 +2,25 @@ import { describe, expect, it, vi } from 'vitest';
 import { appRouter } from './routers';
 import type { TrpcContext } from './_core/context';
 
-const { machineState, upsertMachineMock } = vi.hoisted(() => {
+const { machineState, pieceState, upsertMachineMock, upsertPieceMock } = vi.hoisted(() => {
   const machineState = new Map<string, Record<string, unknown>>();
-  const upsertMachineMock = vi.fn(async (input: Record<string, unknown>) => {
-    const now = new Date();
-    const previous = machineState.get(String(input.id));
-    const row = {
-      ...(previous ?? {}),
-      ...input,
-      dateCreation: previous?.dateCreation ?? now,
-      updatedAt: now,
-    };
-    machineState.set(String(input.id), row);
-    return row;
-  });
-  return { machineState, upsertMachineMock };
+  const pieceState = new Map<string, Record<string, unknown>>();
+  const upsert = (state: Map<string, Record<string, unknown>>) =>
+    vi.fn(async (input: Record<string, unknown>) => {
+      const now = new Date();
+      const previous = state.get(String(input.id));
+      const row = {
+        ...(previous ?? {}),
+        ...input,
+        dateCreation: previous?.dateCreation ?? now,
+        updatedAt: now,
+      };
+      state.set(String(input.id), row);
+      return row;
+    });
+  const upsertMachineMock = upsert(machineState);
+  const upsertPieceMock = upsert(pieceState);
+  return { machineState, pieceState, upsertMachineMock, upsertPieceMock };
 });
 
 vi.mock('./modules/catalogue/repository', () => ({
@@ -27,11 +31,14 @@ vi.mock('./modules/catalogue/repository', () => ({
       const row = machineState.get(id);
       return row?.isPublished === true ? row : null;
     }),
-    listAllPieces: vi.fn(async () => []),
-    listPublishedPieces: vi.fn(async () => []),
-    findPublishedPieceById: vi.fn(async () => null),
+    listAllPieces: vi.fn(async () => [...pieceState.values()]),
+    listPublishedPieces: vi.fn(async () => [...pieceState.values()].filter(row => row.isPublished === true)),
+    findPublishedPieceById: vi.fn(async (id: string) => {
+      const row = pieceState.get(id);
+      return row?.isPublished === true ? row : null;
+    }),
     upsertMachine: upsertMachineMock,
-    upsertPiece: vi.fn(),
+    upsertPiece: upsertPieceMock,
   },
 }));
 
@@ -114,6 +121,44 @@ describe('catalogue publication flow', () => {
     expect(publicCatalogue.some(machine => machine.id === 'MAC-INTEGRATION-UNPUBLISHED')).toBe(false);
     await expect(
       publicCaller.catalogue.getPublishedMachineById({ id: 'MAC-INTEGRATION-UNPUBLISHED' })
+    ).resolves.toBeNull();
+
+    const pieceInput = {
+      id: 'PCE-INTEGRATION-001',
+      reference: 'FILTRE-001',
+      nom: 'Filtre hydraulique',
+      marque: 'CATERPILLAR',
+      famille: 'HYDRAULIQUE',
+      compatibilites: ['320D'],
+      stock: 12,
+      seuilAlerte: 2,
+      prixUnitaire: 45000,
+      fournisseur: 'Fournisseur test',
+      oemReference: 'OEM-320D-001',
+      description: 'Pièce de test publiée.',
+      images: ['/files/test-filtre.png'],
+      specifications: { Matière: 'Composite' },
+      isPublished: true,
+    };
+    await expect(publicCaller.catalogue.savePiece(pieceInput)).rejects.toMatchObject({ code: 'FORBIDDEN' });
+    await admin.catalogue.savePiece(pieceInput);
+
+    const publicPieces = await publicCaller.catalogue.listPublishedPieces();
+    expect(publicPieces).toHaveLength(1);
+    expect(publicPieces[0]).toMatchObject({
+      id: 'PCE-INTEGRATION-001',
+      publie: true,
+      reference: 'FILTRE-001',
+      imagesGalerie: ['/files/test-filtre.png'],
+    });
+    await expect(
+      publicCaller.catalogue.getPublishedPieceById({ id: 'PCE-INTEGRATION-001' })
+    ).resolves.toMatchObject({ id: 'PCE-INTEGRATION-001', publie: true });
+
+    await admin.catalogue.savePiece({ ...pieceInput, id: 'PCE-INTEGRATION-DRAFT', isPublished: false });
+    expect((await publicCaller.catalogue.listPublishedPieces()).some(piece => piece.id === 'PCE-INTEGRATION-DRAFT')).toBe(false);
+    await expect(
+      publicCaller.catalogue.getPublishedPieceById({ id: 'PCE-INTEGRATION-DRAFT' })
     ).resolves.toBeNull();
   });
 });
