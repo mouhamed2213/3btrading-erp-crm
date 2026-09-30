@@ -281,6 +281,15 @@ export default function Catalogue() {
 
   return (
     <div className="space-y-8">
+      {(remoteMachinesQuery.isLoading || remotePiecesQuery.isLoading) && (
+        <div className="rounded-lg border bg-white p-4 text-sm text-slate-600" role="status">Chargement du catalogue depuis le serveur…</div>
+      )}
+      {(remoteMachinesQuery.isError || remotePiecesQuery.isError) && (
+        <div className="flex flex-col gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 sm:flex-row sm:items-center sm:justify-between" role="alert">
+          <span>Impossible de charger le catalogue depuis le serveur. Les données locales ne sont pas utilisées.</span>
+          <Button type="button" variant="outline" onClick={() => { void remoteMachinesQuery.refetch(); void remotePiecesQuery.refetch(); }}>Réessayer</Button>
+        </div>
+      )}
       <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-5">
         <div>
           <div className="flex items-center gap-2 text-amber-600 text-sm font-bold uppercase tracking-wider mb-2">
